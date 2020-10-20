@@ -59,10 +59,44 @@ def mediane(liste):
         return liste[(lon//2)]
     else:
         return (liste[lon//2]+liste[(lon//2)+1])/2
+        
 
+
+## variance/écart-type
+
+def variance(liste):
+    n=len(liste)
+    somme=0
+    m=moyenne_arithmetique(liste)
+    for i in range(n):
+        somme+=(i-m)**2
+    return somme/n
     
-## variance/ écart-type
+def ecart_type(liste):
+    return sqrt(variance(liste))
+    
+    
+## humidex
 
+#Domaine de validité: Formule de Heinrich Gustav Magnus-Tetens
+# 
+# 0<T<60 °C
+# 0,01 (1 %)< phi < 1 (100 %)
+# 0< T_{r} < 50 °C
+
+def alpha(Tair,phi):
+    a=17,27
+    b=237,7                #constantes en celsius
+    return (a*Tair)/(b+Tair) + ln(phi)
+
+def Trosee(Tair,phi):       #phi donne l'humidité relative
+    return (b*alpha(Tair,phi))/(a-alpha(Tair, phi))
+
+      
+def humidex(liste_Tair,liste_humidite):
+    for i in range(len(liste_Tair)):
+        return liste_Tair[i] + 0.5555 * (6.11*exp(5417,7530*((1/273.16)-(1/(273.15 + liste_Trosee[i])))-10))
+    
 
 
 ## courbe
