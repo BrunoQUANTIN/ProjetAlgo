@@ -1,3 +1,5 @@
+import pandas as pd
+
 projet=pd.read_excel("Documents/EIVP/IVP1/Algorihme et programmation/EIVP_KM.xlsx",index_col='id')
 projet.info()  
 projet.head()  #5 premières lignes
@@ -17,7 +19,7 @@ tempera = projet[ 'temp' ]    #assimile une colonne dans une variable --> c'est 
 tempera.head()
 tempera_moy=tempera.mean()    #moyenne
 tempera. fillna ( tempera_moy , inplace = True )   #remplace les valeurs nulles par la moy
-projet.describe()   #donne toutes les infos sur chaque colonnes
+projet.describe()   #donne toutes les infos sur chaque colonnes, moy, std(écart-type), min, max...
 projet['temp'].describe()   #aussi pour les variables de catégories (type de films,...)
 projet['temp'].value_counts().head(10)     #fréquence des 10 1éres catégories
 projet.corr()          #corrélation des colonnes
@@ -40,7 +42,7 @@ projet['temp'].plot (kind='box');      #box
 
 
 
-
+##Python sans pandas
 
 
 
