@@ -17,9 +17,9 @@ projet. dropna ()  #supprime les lignes avec au moins une valeur nulle
 projet. dropna ( axe = 1 )  #supprimes les colonnes avec des nulles
 tempera = projet[ 'temp' ]    #assimile une colonne dans une variable --> c'est une série
 tempera.head()
-tempera_moy=tempera.mean()    #moyenne
+tempera_moy=tempera.mean()    #moyenne --> .mean(axis=1)
 tempera. fillna ( tempera_moy , inplace = True )   #remplace les valeurs nulles par la moy
-projet.describe()   #donne toutes les infos sur chaque colonnes, moy, std(écart-type), min, max...
+projet.describe()   #donne toutes les infos sur chaque colonnes, moy, std(écart-type), min, max, var, sum, prod et pour les lignes --> 
 projet['temp'].describe()   #aussi pour les variables de catégories (type de films,...)
 projet['temp'].value_counts().head(10)     #fréquence des 10 1éres catégories
 projet.corr()          #corrélation des colonnes
@@ -36,13 +36,14 @@ projet.apply(fonction)   # applique une fction à l'ensemble des données
 projet.plot(kind='scatter', x='temp', y='lum', title='Température vs Lum');  # tracé mais marche pas...
 projet[ 'temp' ]. plot ( kind = 'hist' , title = 'Température' );  #idem
 projet['temp'].plot (kind='box');      #box
+projet['colonne'].apply(lambda x: x+1)    #appliquer une fonction à une SERIE
 
 
 
 
 
 
-##Python sans pandas
+##Programmes
 
 
 
