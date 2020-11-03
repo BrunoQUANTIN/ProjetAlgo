@@ -151,10 +151,10 @@ def humidex(liste_Tair,liste_humidite):
 ## courbe
 from pylab import *
 
-def courbe(liste_variable,t0,t1):
-    n=len(liste_variable)
+def courbe(colonne,t0,t1):
+    n=colonne.shape[0]
     t= linspace(t0,t1,n)
-    x=liste_variable
+    x=colonne
     plot(t,x)
     show()
     
