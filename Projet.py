@@ -1,3 +1,49 @@
+projet=pd.read_excel("Documents/EIVP/IVP1/Algorihme et programmation/EIVP_KM.xlsx",index_col='id')
+projet.info()  
+projet.head()  #5 premières lignes
+projet.tail()  #dernières lignes
+projet.shape   #attention sans parenthèse et renvoie le couple (nbr_ligne, nbr_colonne)
+temp_projet=projet.append(projet)   #copie du double
+temp_projet=temp_projet.drop_duplicates()   #copie en ayant retiré le double
+temp_projet.drop_duplicates(inplace=True)   #modifie automatiquement
+temp_projet.drop_duplicates( inplace = True , keep = False )    #False supprime les doublons, first idem sauf la 1ere occurence, last idem sauf la derniere
+projet.columns   #donne index des colonnes
+projet.rename(columns= {},inplace=True )  #pr renommer les colonnes
+projet.columns = [col.lower() for col in projet]  #colonne en minuscule
+projet. isnull (). sum()     #nombre de lignes nulles par colonne
+projet. dropna ()  #supprime les lignes avec au moins une valeur nulle
+projet. dropna ( axe = 1 )  #supprimes les colonnes avec des nulles
+tempera = projet[ 'temp' ]    #assimile une colonne dans une variable --> c'est une série
+tempera.head()
+tempera_moy=tempera.mean()    #moyenne
+tempera. fillna ( tempera_moy , inplace = True )   #remplace les valeurs nulles par la moy
+projet.describe()   #donne toutes les infos sur chaque colonnes
+projet['temp'].describe()   #aussi pour les variables de catégories (type de films,...)
+projet['temp'].value_counts().head(10)     #fréquence des 10 1éres catégories
+projet.corr()          #corrélation des colonnes
+type(tempera)        #type de données ici série
+sous-ensemble=projet[['temp']]    #ici DataFrame car on a ajouté les crochets puis on peut faire une liste de colonnes
+ligne1=projet.loc["2"]     #ensemble des lignes avec l'index= 2 donc ici l'id et on peut sliccer avec extrémité comprise
+ligne2=projet.iloc[52]     #52ième ligne et on peut fair du sliccing avec extrémité exclue
+condition=(projet['temp']==22.4)    #condition sur une colonne et renvoie true ou false pour chaque ligne
+projet[projet['temp']==22.4]        #filtre les valeurs pour lesquelles c'est true
+#on peut faire des condition avec des str aussi et mettre plusieurs condition avec | et & 
+projet[ projet[ 'temp' ]. isin ([ 22.8, 25.3 ])] #ou utiliser .isin avec une liste des valeurs qui marchent
+projet[ ((projet[ 'temp' ] > = 23 ) & (projet[ 'temp' ] <= 25 )) & ( projet[ 'lum' ] > 20.0 ) & ( projet[ 'co2' ] <projet[ 'co2' ].quantile ( 0.25 )) ]    #erreur mais où ?!
+projet.apply(fonction)   # applique une fction à l'ensemble des données
+projet.plot(kind='scatter', x='temp', y='lum', title='Température vs Lum');  # tracé mais marche pas...
+projet[ 'temp' ]. plot ( kind = 'hist' , title = 'Température' );  #idem
+projet['temp'].plot (kind='box');      #box
+
+
+
+
+
+
+
+
+
+
 ## min/max
 
 def calcul_min(liste):
