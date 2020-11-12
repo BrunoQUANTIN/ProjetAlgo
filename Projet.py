@@ -1,6 +1,6 @@
 import pandas as pd
 
-projet=pd.read_excel("Documents/EIVP/IVP1/Algorihme et programmation/EIVP_KM.xlsx",index_col='id')
+projet=pd.read_csv("Documents/EIVP/IVP1/Algorihme et programmation/EIVP_KM.csv",index_col='id', sep=";")
 projet.info()  
 projet.head()  #5 premières lignes
 projet.tail()  #dernières lignes
@@ -149,6 +149,8 @@ def humidex(liste_Tair,liste_humidite):
 
 
 ## courbe
+import numpy
+import matplotlib.pyplot
 from pylab import *
 
 def courbe(liste_variable,t0,t1):
