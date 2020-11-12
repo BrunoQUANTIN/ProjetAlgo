@@ -49,88 +49,110 @@ projet=pd.read_csv("EIVP_KM.csv", sep=";") #sep permet permet de délimiter chaq
 
 ## min/max
 
-def calcul_min(liste):
-    min=liste[0]
-    n=len(liste)
+def calcul_min(serie): #DOESNT WORK Pour des trés longues séries
+    min=serie[0]
+    n=serie.shape[0]
     for i in range(n-1) :
-        if liste[i+1]<liste[i]:
-            min=liste[i+1]
+        if serie[i+1]<serie[i]:
+            min=serie[i+1]
         else:
             continue
     return min
     
-def calcul_max(liste):
-    max=liste[0]
-    n=len(liste)
+def calcul_max(serie): #DOESNT WORK Pour des trés longues séries
+    max=serie[0]
+    n=serie.shape[0]
     for i in range(n-1) :
-        if liste[i+1]>liste[i]:
-            max=liste[i+1]
+        if serie[i+1]>serie[i]:
+            max=serie[i+1]
         else:
             continue
     return max
     
 ## médianne/moyennes
 
-def moyenne_arithmetique(liste):
-    n=len(liste)
+def moyenne_arithmetique(serie): #WORKS
+    n=serie.shape[0]
     somme=0
     for i in range(n):
-        somme+=liste[i]
+        somme+=serie[i]
     return somme/n
     
-def moyenne_geom(liste):
-    n=len(liste)
-    b=liste[0]
+def moyenne_geom(serie):
+    n=serie.shape[0]
+    b=serie[0]
     for i in range (1,n):
-        b=b*liste[i]
+        b=b*serie[i]
     moygéo=b**(1/n)
     return moygéo
             
     
-def moyenne_harmo(liste):
-    n=len(liste)
+def moyenne_harmo(serie):
+    n=serie.sahpe[0]
     somme=0
     for i in range(n):
-        somme+=1/liste[i]
+        somme+=1/serie[i]
     return n/somme
     
     
-def bubbleSort(liste_a_trier):
-    n=len(liste_a_trier)
+def bubbleSort(serie_a_trier):
+    n=serie_a_trier.shape[0]
     while n>0:
         for i in range(n-1):
-            if liste_a_trier[i]>liste_a_trier[i+1]:
-                liste_a_trier[i], liste_a_trier[i+1] = liste_a_trier[i+1], liste_a_trier[i]
+            if serie_a_trier[i]>serie_a_trier[i+1]:
+                serie_a_trier[i], serie_a_trier[i+1] = serie_a_trier[i+1], serie_a_trier[i]
             else:
                 continue
         n-=1
-    return liste_a_trier  
+    return serie_a_trier  
     
       
-def mediane(liste):
-    lon=len(liste)
-    l2= bubbleSort(liste)
+def mediane(serie):  #DOESNT WORK pb du bubblesort
+    lon=serie.shape[0]
+    l2= bubbleSort(serie)
     if lon%2!=0:
-        return liste[(lon//2)]
+        return serie[(lon//2)]
     else:
-        return (liste[lon//2]+liste[(lon//2)+1])/2
+        return (serie[lon//2]+serie[(lon//2)+1])/2
         
-
 
 ## variance/écart-type
 
-def variance(liste):
-    n=len(liste)
+def variance(serie):  #DOESNT WORK  test avec noise vrai=74.78902424793762 faux=20439118.290295
+    n=serie.shape[0]
     somme=0
-    m=moyenne_arithmetique(liste)
+    m=moyenne_arithmetique(serie)
     for i in range(n):
         somme+=(i-m)**2
     return somme/n
     
-def ecart_type(liste):
-    return sqrt(variance(liste))
+def ecart_type(serie):
+    return sqrt(variance(serie))
+
+
+## étendue
+
+def étendue(serie):
+    return calcul_max(serie)-calcul_min(serie)
+
     
-    
+## Quartiles
+
+def PremierQuartile(serie):
+    listeordonnée=bubbleSort(serie)
+    q=int(len(serie)/4)
+    ###qsup=q+1 d'un point de vue du code, pas utile d'arrondir à l'entier supèrieur 
+    return listeordonnée[q-1]
+
+def TroisièmeQuartile(serie):
+    listeordonnée=bubbleSort(serie)
+    q=int(len(serie)*3/4)
+    return listeordonnée[q-1]
+
+def InterQuartile(serie):
+    return TroisièmeQuartile(serie)-PremierQuartile(serie)
+
+   
 ## humidex
 
 #Domaine de validité: Formule de Heinrich Gustav Magnus-Tetens
@@ -157,7 +179,8 @@ def humidex(liste_Tair,liste_humidite):
 ## courbe
 from pylab import *
 import matplotlib.pyplot as plt
-def courbe(colonne,t0,t1):
+
+def courbe(colonne,t0,t1): #WORKS
     n=colonne.shape[0]
     t= linspace(t0,t1,n)
     x=colonne
