@@ -17,9 +17,9 @@ projet. dropna ()  #supprime les lignes avec au moins une valeur nulle
 projet. dropna ( axe = 1 )  #supprimes les colonnes avec des nulles
 tempera = projet[ 'temp' ]    #assimile une colonne dans une variable --> c'est une série
 tempera.head()
-tempera_moy=tempera.mean()    #moyenne --> .mean(axis=1)
+tempera_moy=tempera.mean()    #moyenne
 tempera. fillna ( tempera_moy , inplace = True )   #remplace les valeurs nulles par la moy
-projet.describe()   #donne toutes les infos sur chaque colonnes, moy, std(écart-type), min, max, var, sum, prod et pour les lignes --> 
+projet.describe()   #donne toutes les infos sur chaque colonnes, moy, std(écart-type), min, max...
 projet['temp'].describe()   #aussi pour les variables de catégories (type de films,...)
 projet['temp'].value_counts().head(10)     #fréquence des 10 1éres catégories
 projet.corr()          #corrélation des colonnes
@@ -36,14 +36,14 @@ projet.apply(fonction)   # applique une fction à l'ensemble des données
 projet.plot(kind='scatter', x='temp', y='lum', title='Température vs Lum');  # tracé mais marche pas...
 projet[ 'temp' ]. plot ( kind = 'hist' , title = 'Température' );  #idem
 projet['temp'].plot (kind='box');      #box
-projet['colonne'].apply(lambda x: x+1)    #appliquer une fonction à une SERIE
+projet.groupby(['id']).mean()     #moyenne pour chaque identifiant
 
 
 
 
 
 
-##Programmes
+##Python sans pandas
 
 
 
@@ -151,14 +151,14 @@ def humidex(liste_Tair,liste_humidite):
 ## courbe
 from pylab import *
 
-def courbe(colonne,t0,t1):
-    n=colonne.shape[0]
+def courbe(liste_variable,t0,t1):
+    n=len(liste_variable)
     t= linspace(t0,t1,n)
-    x=colonne
+    x=liste_variable
     plot(t,x)
     show()
     
-###Retest
+
     
     
     
