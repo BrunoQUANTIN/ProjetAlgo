@@ -1,5 +1,5 @@
 import pandas as pd
-
+"""
 projet=pd.read_excel("Documents/EIVP/IVP1/Algorihme et programmation/EIVP_KM.xlsx",index_col='id')
 projet.info()  
 projet.head()  #5 premières lignes
@@ -38,14 +38,14 @@ projet[ 'temp' ]. plot ( kind = 'hist' , title = 'Température' );  #idem
 projet['temp'].plot (kind='box');      #box
 projet['colonne'].apply(lambda x: x+1)    #appliquer une fonction à une SERIE
 
-
+"""
 
 
 
 
 ##Programmes
 
-
+projet=pd.read_csv("EIVP_KM.csv", sep=";") #sep permet permet de délimiter chaque colonne en décrivant le sérateur qui les constitue
 
 ## min/max
 
@@ -80,6 +80,12 @@ def moyenne_arithmetique(liste):
     
 def moyenne_geom(liste):
     n=len(liste)
+    b=liste[0]
+    for i in range (1,n):
+        b=b*liste[i]
+    moygéo=b**(1/n)
+    return moygéo
+            
     
 def moyenne_harmo(liste):
     n=len(liste)
@@ -150,7 +156,7 @@ def humidex(liste_Tair,liste_humidite):
 
 ## courbe
 from pylab import *
-
+import matplotlib.pyplot as plt
 def courbe(colonne,t0,t1):
     n=colonne.shape[0]
     t= linspace(t0,t1,n)
