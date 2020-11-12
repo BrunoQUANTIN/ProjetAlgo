@@ -1,6 +1,8 @@
 import pandas as pd
 """
+
 projet=pd.read_csv("C:/Users/QUANTIN/ProjetAlgo1/EIVP_KM.csv", sep=";")
+
 projet.info()  
 projet.head()  #5 premières lignes
 projet.tail()  #dernières lignes
@@ -188,7 +190,7 @@ def courbe(colonne,t0,t1): #WORKS
     show()
     
 
-    
+## test85    
     
     
     
