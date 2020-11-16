@@ -107,7 +107,19 @@ def bubbleSort(serie_a_trier):
                 continue
         n-=1
     return serie_a_trier  
+
     
+def trirap(serie):
+    pivot=serie[0]
+    Lg=[]
+    Ld=[]
+    for i in range(1,len(serie)):
+        if serie[i]<pivot:
+            Lg.append(serie[i])
+        else:
+            Ld.append(serie[i])
+    return trirap(Lg)+trirap(Ld)
+   
       
 def mediane(serie):  #DOESNT WORK pb du bubblesort
     lon=serie.shape[0]
