@@ -1,8 +1,22 @@
 import pandas as pd
-"""
+import sys
+sys.setrecursionlimit(15000)  #changement limite récursivité
 
 projet=pd.read_csv("C:/Users/QUANTIN/ProjetAlgo1/EIVP_KM.csv", sep=";")
+projet1=(projet[projet['id']==1])
+projet2=(projet[projet['id']==2])
+projet3=(projet[projet['id']==3])
+projet4=(projet[projet['id']==4])
+projet5=(projet[projet['id']==5])
+projet6=(projet[projet['id']==6])
+tempér1=(projet1['temp'])
+tempér2=(projet2['temp'])
+tempér3=(projet3['temp'])
+tempér4=(projet4['temp'])
+tempér5=(projet5['temp'])
+tempér6=(projet6['temp'])
 
+"""
 projet.info()  
 projet.head()  #5 premières lignes
 projet.tail()  #dernières lignes
@@ -99,7 +113,7 @@ def moyenne_harmo(serie):
      
 
     
-def trirap(serie):
+def trirap(serie):        #WORK pour temp, humi --> pour lumi changement limit récursivité --> pour noise diviser séparer la liste en fonction des id sinon crash
     if len(serie)<=1:
         return serie
     else:
@@ -115,13 +129,13 @@ def trirap(serie):
         return trirap(Lg) + [pivot] + trirap(Ld)
    
       
-def mediane(serie):  #DOESNT WORK pb du bubblesort à essayer avec trirap
+def mediane(serie):  #WORK 
     lon=serie.shape[0]
     l2= trirap(serie)
     if lon%2!=0:
-        return serie[(lon//2)]
+        return l2[(lon//2)]
     else:
-        return (serie[lon//2]+serie[(lon//2)+1])/2
+        return (l2[lon//2]+l2[(lon//2)+1])/2
         
 
 ## variance/écart-type
