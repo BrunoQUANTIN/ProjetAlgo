@@ -96,34 +96,28 @@ def moyenne_harmo(serie):
         somme+=1/serie[i]
     return n/somme
     
-    
-def bubbleSort(serie_a_trier):
-    n=serie_a_trier.shape[0]
-    while n>0:
-        for i in range(n-1):
-            if serie_a_trier[i]>serie_a_trier[i+1]:
-                serie_a_trier[i], serie_a_trier[i+1] = serie_a_trier[i+1], serie_a_trier[i]
-            else:
-                continue
-        n-=1
-    return serie_a_trier  
+     
 
     
 def trirap(serie):
-    pivot=serie[0]
-    Lg=[]
-    Ld=[]
-    for i in range(1,len(serie)):
-        if serie[i]<pivot:
-            Lg.append(serie[i])
-        else:
-            Ld.append(serie[i])
-    return trirap(Lg)+trirap(Ld)
+    if len(serie)<=1:
+        return serie
+    else:
+        n=len(serie)
+        pivot=serie[0]
+        Lg=[]
+        Ld=[]
+        for i in range (1,n):
+            if serie[i] <= pivot:
+                Lg.append(serie[i])
+            else:
+                Ld.append(serie[i])
+        return trirap(Lg) + [pivot] + trirap(Ld)
    
       
-def mediane(serie):  #DOESNT WORK pb du bubblesort
+def mediane(serie):  #DOESNT WORK pb du bubblesort à essayer avec trirap
     lon=serie.shape[0]
-    l2= bubbleSort(serie)
+    l2= trirap(serie)
     if lon%2!=0:
         return serie[(lon//2)]
     else:
