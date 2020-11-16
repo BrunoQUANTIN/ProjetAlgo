@@ -53,7 +53,7 @@ projet=pd.read_csv("EIVP_KM.csv", sep=";") #sep permet permet de délimiter chaq
 
 def calcul_min(serie): #DOESNT WORK Pour des trés longues séries
     min=serie[0]
-    n=serie.shape[0]
+    n=serie.shape[0]  #pas nécessaire len(serie) devrait marcher
     for i in range(n-1) :
         if serie[i+1]<serie[i]:
             min=serie[i+1]
@@ -189,8 +189,7 @@ def courbe(colonne,t0,t1): #WORKS
     plot(t,x)
     show()
     
-
-## test85    
+  
     
     
     
