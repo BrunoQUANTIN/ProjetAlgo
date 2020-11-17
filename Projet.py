@@ -66,24 +66,24 @@ projet=pd.read_csv("EIVP_KM.csv", sep=";") #sep permet permet de délimiter chaq
 ## min/max
 
 def calcul_min(serie): #DOESNT WORK Pour des trés longues séries
-    min=serie[0]
+    mini=serie[0]
     n=serie.shape[0]  #pas nécessaire len(serie) devrait marcher
     for i in range(n-1) :
-        if serie[i]<min:
-            min=serie[i+1]
+        if serie[i+1]<mini:
+            mini=serie[i+1]
         else:
             continue
-    return min
+    return mini
     
 def calcul_max(serie): #DOESNT WORK Pour des trés longues séries
-    max=serie[0]
+    maxi=serie[0]
     n=serie.shape[0]
     for i in range(n-1) :
-        if serie[i]>max:
-            max=serie[i+1]
+        if serie[i+1]>maxi:
+            maxi=serie[i+1]
         else:
             continue
-    return max
+    return maxi
     
 ## médianne/moyennes
 
@@ -110,12 +110,12 @@ def moyenne_harmo(serie):
         somme+=1/serie[i]
     return n/somme
     
-def moy_énergétique(serie):
+#def moy_énergétique(serie):
     
      
 
     
-def trirap(serie):        #WORK pour temp, humi --> pour lumi changement limit récursivité --> pour noise diviser séparer la liste en fonction des id sinon crash --> pas encore vérif c02 mais pas de raison que ca plante
+def trirap(serie):        #WORK pour temp, humi --> pour lumi changement limit récursivité --> pour noise diviser séparer la liste en fonction des id sinon crash 
     if len(serie)<=1:
         return serie
     else:
