@@ -69,11 +69,11 @@ projet['colonne'].apply(lambda x: x+1)    #appliquer une fonction à une SERIE
 
 
 
-##Programmes
+"Programmes"
 
-## min/max
+"min/max"
 
-def calcul_min(serie): #DOESNT WORK Pour des trés longues séries
+def calcul_min(serie): #WORKS 
     mini=serie[0]
     n=serie.shape[0]  #pas nécessaire len(serie) devrait marcher
     for i in range(n-1) :
@@ -83,17 +83,17 @@ def calcul_min(serie): #DOESNT WORK Pour des trés longues séries
             continue
     return mini
     
-def calcul_max(serie): #DOESNT WORK Pour des trés longues séries
+def calcul_max(serie): #WORKS
     maxi=serie[0]
     n=serie.shape[0]
     for i in range(n-1) :
-        if serie[i]>maxi:
+        if serie[i+1]>maxi:
             maxi=serie[i+1]
         else:
             continue
     return maxi
     
-## médianne/moyennes
+"médianne/moyennes"
 
 def moyenne_arithmetique(serie): #WORKS
     n=serie.shape[0]
@@ -151,44 +151,43 @@ def mediane(serie):  #WORK
         return (l2[lon//2]+l2[(lon//2)+1])/2
         
 
-## variance/écart-type
+"variance/écart-type"
 
-def variance(serie):  #DOESNT WORK  test avec noise vrai=74.78902424793762 faux=20439118.290295
+def variance(serie):  #WORKS attention à la précision
     n=serie.shape[0]
     somme=0
     m=moyenne_arithmetique(serie)
-    for i in range(n):
-        somme+=(i-m)**2
+    for x in serie:
+        somme+=(x-m)**2
     return somme/n
     
-def ecart_type(serie):
+def ecart_type(serie): #WORKS attention à la précision
     return sqrt(variance(serie))
 
 
-## étendue
+"étendue"
 
 def étendue(serie):
-    return calcul_max(serie)-calcul_min(serie)
+    return serie.max()-serie.min()
 
-    
-## Quartiles
+"Quartiles"
 
-def PremierQuartile(serie):
-    listeordonnée=bubbleSort(serie)
+def PremierQuartile(serie):  #WORKS
+    listeordonnée=trirap(serie)
     q=int(len(serie)/4)
     ###qsup=q+1 d'un point de vue du code, pas utile d'arrondir à l'entier supèrieur 
     return listeordonnée[q-1]
 
-def TroisièmeQuartile(serie):
-    listeordonnée=bubbleSort(serie)
+def TroisièmeQuartile(serie): #WORKS
+    listeordonnée=trirap(serie)
     q=int(len(serie)*3/4)
     return listeordonnée[q-1]
 
-def InterQuartile(serie):
+def InterQuartile(serie): #WORKS
     return TroisièmeQuartile(serie)-PremierQuartile(serie)
 
    
-## humidex
+"humidex"
 
 #Domaine de validité: Formule de Heinrich Gustav Magnus-Tetens
 # 
@@ -218,7 +217,8 @@ def humidex(listTair,listhumidite):
     
 
 
-## courbe
+"courbe"
+
 from pylab import *
 import matplotlib.pyplot as plt
 
