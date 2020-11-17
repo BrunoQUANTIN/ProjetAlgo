@@ -1,8 +1,31 @@
 import pandas as pd
+import sys
+import math
+from math import* 
+sys.setrecursionlimit(15000)  #changement limite récursivité
+
 """
-
+#Bruno
 projet=pd.read_csv("C:/Users/QUANTIN/ProjetAlgo1/EIVP_KM.csv", sep=";")
+"""
+#Zacharie
+projet=pd.read_csv("EIVP_KM.csv", sep=";")
 
+
+projet1=(projet[projet['id']==1])
+projet2=(projet[projet['id']==2])
+projet3=(projet[projet['id']==3])
+projet4=(projet[projet['id']==4])
+projet5=(projet[projet['id']==5])
+projet6=(projet[projet['id']==6])
+tempér1=(projet1['temp'])
+tempér2=(projet2['temp'])
+tempér3=(projet3['temp'])
+tempér4=(projet4['temp'])
+tempér5=(projet5['temp'])
+tempér6=(projet6['temp'])
+
+"""
 projet.info()  
 projet.head()  #5 premières lignes
 projet.tail()  #dernières lignes
@@ -47,29 +70,27 @@ projet['colonne'].apply(lambda x: x+1)    #appliquer une fonction à une SERIE
 
 ##Programmes
 
-projet=pd.read_csv("EIVP_KM.csv", sep=";") #sep permet permet de délimiter chaque colonne en décrivant le sérateur qui les constitue
-
 ## min/max
 
 def calcul_min(serie): #DOESNT WORK Pour des trés longues séries
-    min=serie[0]
+    mini=serie[0]
     n=serie.shape[0]  #pas nécessaire len(serie) devrait marcher
     for i in range(n-1) :
-        if serie[i+1]<serie[i]:
-            min=serie[i+1]
+        if serie[i]<mini:
+            mini=serie[i]
         else:
             continue
-    return min
+    return mini
     
 def calcul_max(serie): #DOESNT WORK Pour des trés longues séries
-    max=serie[0]
+    maxi=serie[0]
     n=serie.shape[0]
     for i in range(n-1) :
-        if serie[i+1]>serie[i]:
-            max=serie[i+1]
+        if serie[i]>maxi:
+            maxi=serie[i+1]
         else:
             continue
-    return max
+    return maxi
     
 ## médianne/moyennes
 
@@ -96,38 +117,37 @@ def moyenne_harmo(serie):
         somme+=1/serie[i]
     return n/somme
     
+def moy_nrgtique(serie):
+    n=len(serie)
+    s=abs(serie[0]-serie[1]/(log(serie[0])-log(serie[1])))
+    for i in range(2,n):
+        s=abs(s-serie[i]/(log(s)-log(serie[i])))
+    return s
     
-def bubbleSort(serie_a_trier):
-    n=serie_a_trier.shape[0]
-    while n>0:
-        for i in range(n-1):
-            if serie_a_trier[i]>serie_a_trier[i+1]:
-                serie_a_trier[i], serie_a_trier[i+1] = serie_a_trier[i+1], serie_a_trier[i]
+     
+def trirap(serie):        #WORK pour temp, humi --> pour lumi changement limit récursivité --> pour noise diviser séparer la liste en fonction des id sinon crash 
+    if len(serie)<=1:
+        return serie
+    else:
+        n=len(serie)
+        pivot=serie[0]
+        Lg=[]
+        Ld=[]
+        for i in range (1,n):
+            if serie[i] <= pivot:
+                Lg.append(serie[i])
             else:
-                continue
-        n-=1
-    return serie_a_trier  
-
-    
-def trirap(serie):
-    pivot=serie[0]
-    Lg=[]
-    Ld=[]
-    for i in range(1,len(serie)):
-        if serie[i]<pivot:
-            Lg.append(serie[i])
-        else:
-            Ld.append(serie[i])
-    return trirap(Lg)+trirap(Ld)
+                Ld.append(serie[i])
+        return trirap(Lg) + [pivot] + trirap(Ld)
    
       
-def mediane(serie):  #DOESNT WORK pb du bubblesort
+def mediane(serie):  #WORK 
     lon=serie.shape[0]
-    l2= bubbleSort(serie)
+    l2= trirap(serie)
     if lon%2!=0:
-        return serie[(lon//2)]
+        return l2[(lon//2)]
     else:
-        return (serie[lon//2]+serie[(lon//2)+1])/2
+        return (l2[lon//2]+l2[(lon//2)+1])/2
         
 
 ## variance/écart-type
