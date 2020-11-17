@@ -24,6 +24,7 @@ tempér3=(projet3['temp'])
 tempér4=(projet4['temp'])
 tempér5=(projet5['temp'])
 tempér6=(projet6['temp'])
+humidity1=(projet1['humidity'])
 
 """
 projet.info()  
@@ -195,18 +196,25 @@ def InterQuartile(serie):
 # 0,01 (1 %)< phi < 1 (100 %)
 # 0< T_{r} < 50 °C
 
-def alpha(Tair,phi):
-    a=17,27
-    b=237,7                #constantes en celsius
-    return (a*Tair)/(b+Tair) + ln(phi)
+"Varibles globales en celsisus"
+a=17.27
+b=237.7 
 
-def Trosee(Tair,phi):       #phi donne l'humidité relative
-    return (b*alpha(Tair,phi))/(a-alpha(Tair, phi))
+def alpha(Tair,humidite):
+    return (a*Tair)/(b+Tair) + log(humidite)
+     
+def Trosee(listTair,listhumidite): 
+    list_Trosee=[]
+    for i in range(len(listTair)):
+        list_Trosee.append((b*alpha(listTair[i],listhumidite[i]))/(a-alpha(listTair[i],listhumidite[i])))
+    return list_Trosee
 
-      
-def humidex(liste_Tair,liste_humidite):
-    for i in range(len(liste_Tair)):
-        return liste_Tair[i] + 0.5555 * (6.11*exp(5417,7530*((1/273.16)-(1/(273.15 + liste_Trosee[i])))-10))
+def humidex(listTair,listhumidite):
+    list_Humidex=[]
+    for i in range(len(listTair)):
+        list_Humidex.append(listTair[i] + 0.5555 * (6.11*exp(5417.7530*((1/273.16)-(1/(273.15 + Trosee(listTair,listhumidite)[i])))-10)))
+    return list_Humidex
+     
     
 
 
