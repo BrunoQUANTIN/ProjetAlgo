@@ -220,7 +220,6 @@ def courbe(colonne,t0,t1): #WORKS
     x=colonne
     plot(t,x)
     show()
-    
   
     
     
