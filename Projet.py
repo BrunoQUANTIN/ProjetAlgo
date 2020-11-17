@@ -1,16 +1,19 @@
 import pandas as pd
 import sys
 import math
-from math import* 
+from math import*
+from pylab import *
+import matplotlib.pyplot as plt 
+import numpy
 sys.setrecursionlimit(15000)  #changement limite récursivité
 
-"""
+
 #Bruno
-projet=pd.read_csv("C:/Users/QUANTIN/ProjetAlgo1/EIVP_KM.csv", sep=";")
+projet=pd.read_csv("C:/Users/QUANTIN/ProjetAlgo1/EIVP_KM.csv", sep=";",index_col='sent_at',parse_dates=True)
 """
 #Zacharie
-projet=pd.read_csv("EIVP_KM.csv", sep=";")
-
+projet=pd.read_csv("EIVP_KM.csv", sep=";",index_col='sent_at',parse_dates=True)
+"""
 
 projet1=(projet[projet['id']==1])
 projet2=(projet[projet['id']==2])
@@ -25,6 +28,11 @@ tempér4=(projet4['temp'])
 tempér5=(projet5['temp'])
 tempér6=(projet6['temp'])
 humidity1=(projet1['humidity'])
+humidity2=(projet2['humidity'])
+humidity3=(projet3['humidity'])
+humidity4=(projet4['humidity'])
+humidity5=(projet5['humidity'])
+humidity6=(projet6['humidity'])
 
 """
 projet.info()  
@@ -69,13 +77,14 @@ projet['colonne'].apply(lambda x: x+1)    #appliquer une fonction à une SERIE
 
 
 
-"Programmes"
+##Programmes
 
 "min/max"
 
-def calcul_min(serie): #WORKS 
+def calcul_min(serie_csv):
+    serie=list(serie_csv)    #WORKS 
     mini=serie[0]
-    n=serie.shape[0]  #pas nécessaire len(serie) devrait marcher
+    n=len(serie) #pas nécessaire len(serie) devrait marcher
     for i in range(n-1) :
         if serie[i]<mini:
             mini=serie[i]
@@ -83,9 +92,10 @@ def calcul_min(serie): #WORKS
             continue
     return mini
     
-def calcul_max(serie): #WORKS
+def calcul_max(serie_csv):
+    serie=list(serie_csv) #WORKS
     maxi=serie[0]
-    n=serie.shape[0]
+    n=len(serie)
     for i in range(n-1) :
         if serie[i+1]>maxi:
             maxi=serie[i+1]
@@ -95,15 +105,17 @@ def calcul_max(serie): #WORKS
     
 "médianne/moyennes"
 
-def moyenne_arithmetique(serie): #WORKS
-    n=serie.shape[0]
+def moyenne_arithmetique(serie_csv):
+    serie=list(serie_csv) #WORKS
+    n=len(serie)
     somme=0
     for i in range(n):
         somme+=serie[i]
     return somme/n
     
-def moyenne_geom(serie):
-    n=serie.shape[0]
+def moyenne_geom(serie_csv):
+    serie=list(serie_csv)
+    n=len(serie)
     b=serie[0]
     for i in range (1,n):
         b=b*serie[i]
@@ -111,14 +123,16 @@ def moyenne_geom(serie):
     return moygéo
             
     
-def moyenne_harmo(serie):
-    n=serie.sahpe[0]
+def moyenne_harmo(serie_csv):
+    serie=list(serie_csv)
+    n=len(serie)
     somme=0
     for i in range(n):
         somme+=1/serie[i]
     return n/somme
     
-def moy_nrgtique(serie):
+def moy_nrgtique(serie_csv):
+    serie=list(serie_csv)
     n=len(serie)
     s=abs(serie[0]-serie[1]/(log(serie[0])-log(serie[1])))
     for i in range(2,n):
@@ -126,7 +140,8 @@ def moy_nrgtique(serie):
     return s
     
      
-def trirap(serie):        #WORK pour temp, humi --> pour lumi changement limit récursivité --> pour noise diviser séparer la liste en fonction des id sinon crash 
+def trirap(serie_csv):
+    serie=list(serie_csv)        #WORK pour temp, humi --> pour lumi changement limit récursivité --> pour noise diviser séparer la liste en fonction des id sinon crash 
     if len(serie)<=1:
         return serie
     else:
@@ -143,7 +158,7 @@ def trirap(serie):        #WORK pour temp, humi --> pour lumi changement limit r
    
       
 def mediane(serie):  #WORK 
-    lon=serie.shape[0]
+    lon=len(serie)
     l2= trirap(serie)
     if lon%2!=0:
         return l2[(lon//2)]
@@ -154,7 +169,7 @@ def mediane(serie):  #WORK
 "variance/écart-type"
 
 def variance(serie):  #WORKS attention à la précision
-    n=serie.shape[0]
+    n=len(serie)
     somme=0
     m=moyenne_arithmetique(serie)
     for x in serie:
@@ -175,7 +190,7 @@ def étendue(serie):
 def PremierQuartile(serie):  #WORKS
     listeordonnée=trirap(serie)
     q=int(len(serie)/4)
-    ###qsup=q+1 d'un point de vue du code, pas utile d'arrondir à l'entier supèrieur 
+    #qsup=q+1 d'un point de vue du code, pas utile d'arrondir à l'entier supèrieur 
     return listeordonnée[q-1]
 
 def TroisièmeQuartile(serie): #WORKS
@@ -202,13 +217,15 @@ b=237.7
 def alpha(Tair,humidite):
     return (a*Tair)/(b+Tair) + log(humidite)
      
-def Trosee(listTair,listhumidite): 
+def Trosee(listTair_csv,listhumidite_csv):
+    listTair,listhumidite=list(listTair_csv),list(listhumidite_csv)
     list_Trosee=[]
     for i in range(len(listTair)):
         list_Trosee.append((b*alpha(listTair[i],listhumidite[i]))/(a-alpha(listTair[i],listhumidite[i])))
     return list_Trosee
 
-def humidex(listTair,listhumidite):
+def humidex(listTair_csv,listhumidite_csv):
+    listTair,listhumidite=list(listTair_csv),list(listhumidite_csv)    #WORKS
     list_Humidex=[]
     for i in range(len(listTair)):
         list_Humidex.append(listTair[i] + 0.5555 * (6.11*exp(5417.7530*((1/273.16)-(1/(273.15 + Trosee(listTair,listhumidite)[i])))-10)))
@@ -216,20 +233,28 @@ def humidex(listTair,listhumidite):
      
     
 
+##courbe
 
-"courbe"
+def courbe(serie):
+    serie.plot()
+    plt.show()
 
-from pylab import *
-import matplotlib.pyplot as plt
+##courbe en fonction jour
 
-def courbe(colonne,t0,t1): #WORKS
-    n=colonne.shape[0]
-    t= linspace(t0,t1,n)
-    x=colonne
-    plot(t,x)
-    show()
+def courbe_jour(serie,date):
+    if type(date)!=str:
+        print ("La date est une chaîne de caractère!")
+    else:
+        serie[date].plot()
+        plt.show()
   
-    
+def courbe_intervalle_tps(serie,date1,date2):
+    if type(date1)!=str or type(date2)!=str:
+        print ("La date est une chaîne de caractère!")
+    else:
+        serie[date1:date2].plot()
+        plt.show()
+  
     
     
     
