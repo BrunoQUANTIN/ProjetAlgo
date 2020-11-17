@@ -1,8 +1,17 @@
 import pandas as pd
 import sys
+import math
+from math import* 
 sys.setrecursionlimit(15000)  #changement limite récursivité
 
+"""
+#Bruno
 projet=pd.read_csv("C:/Users/QUANTIN/ProjetAlgo1/EIVP_KM.csv", sep=";")
+"""
+#Zacharie
+projet=pd.read_csv("EIVP_KM.csv", sep=";")
+
+
 projet1=(projet[projet['id']==1])
 projet2=(projet[projet['id']==2])
 projet3=(projet[projet['id']==3])
@@ -61,16 +70,14 @@ projet['colonne'].apply(lambda x: x+1)    #appliquer une fonction à une SERIE
 
 ##Programmes
 
-projet=pd.read_csv("EIVP_KM.csv", sep=";") #sep permet permet de délimiter chaque colonne en décrivant le sérateur qui les constitue
-
 ## min/max
 
 def calcul_min(serie): #DOESNT WORK Pour des trés longues séries
     mini=serie[0]
     n=serie.shape[0]  #pas nécessaire len(serie) devrait marcher
     for i in range(n-1) :
-        if serie[i+1]<mini:
-            mini=serie[i+1]
+        if serie[i]<mini:
+            mini=serie[i]
         else:
             continue
     return mini
@@ -79,7 +86,7 @@ def calcul_max(serie): #DOESNT WORK Pour des trés longues séries
     maxi=serie[0]
     n=serie.shape[0]
     for i in range(n-1) :
-        if serie[i+1]>maxi:
+        if serie[i]>maxi:
             maxi=serie[i+1]
         else:
             continue
@@ -110,11 +117,14 @@ def moyenne_harmo(serie):
         somme+=1/serie[i]
     return n/somme
     
-#def moy_énergétique(serie):
+def moy_nrgtique(serie):
+    n=len(serie)
+    s=abs(serie[0]-serie[1]/(log(serie[0])-log(serie[1])))
+    for i in range(2,n):
+        s=abs(s-serie[i]/(log(s)-log(serie[i])))
+    return s
     
      
-
-    
 def trirap(serie):        #WORK pour temp, humi --> pour lumi changement limit récursivité --> pour noise diviser séparer la liste en fonction des id sinon crash 
     if len(serie)<=1:
         return serie
@@ -210,7 +220,6 @@ def courbe(colonne,t0,t1): #WORKS
     x=colonne
     plot(t,x)
     show()
-    
   
     
     
