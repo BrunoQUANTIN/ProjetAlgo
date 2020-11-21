@@ -7,13 +7,13 @@ import matplotlib.pyplot as plt
 import numpy
 sys.setrecursionlimit(15000)  #changement limite récursivité
 
-"""
+
 #Bruno
 projet=pd.read_csv("C:/Users/QUANTIN/ProjetAlgo1/EIVP_KM.csv", sep=";",index_col='sent_at',parse_dates=True)
 """
 #Zacharie
 projet=pd.read_csv("EIVP_KM.csv", sep=";",index_col='sent_at',parse_dates=True)
-
+"""
 def ss_projet(num):
     if num>6 or num<=0:
         print("les capteurs sont numérotés de 1 à 6")
@@ -258,8 +258,9 @@ def humidex(listTair_csv,listhumidite_csv):
 
 ##courbe
 
-def courbe(serie):
-    serie.plot()
+def courbe(serie1, serie2):
+    serie1.plot()
+    serie2.plot()
     plt.show()
 
 ##courbe en fonction jour
@@ -285,13 +286,13 @@ def Diagrm_Comparaison(nom_serie,date):
     Tableau=pd.DataFrame({"moyenne " +nom_serie:listmoy},index=['capteur1','capteur2','capteur3','capteur4','capteur5','capteur6'])
     return Tableau.plot.bar() 
 
+    
+
 def Diagrm_Comparaisons(nom_serie,date):
-    Dicovid={}
     for i in range(1,7):
-        Dicovid.update({'capteur'+str(i):ss_colonnedate(nom_serie,i,date)})
-    Tableau=pd.DataFrame(Dicovid)
-    print(Tableau)
-    return Tableau.plot()
+        ss_colonnedate(nom_serie,i,date).plot()
+    plt.show()
+
    
     
   
