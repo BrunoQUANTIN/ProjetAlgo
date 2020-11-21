@@ -7,14 +7,26 @@ import matplotlib.pyplot as plt
 import numpy
 sys.setrecursionlimit(15000)  #changement limite récursivité
 
-
+"""
 #Bruno
 projet=pd.read_csv("C:/Users/QUANTIN/ProjetAlgo1/EIVP_KM.csv", sep=";",index_col='sent_at',parse_dates=True)
 """
 #Zacharie
 projet=pd.read_csv("EIVP_KM.csv", sep=";",index_col='sent_at',parse_dates=True)
-"""
 
+def ss_projet(num):
+    if num>6 or num<=0:
+        print("les capteurs sont numérotés de 1 à 6")
+    else:
+        return projet[projet['id']==num]
+
+def ss_colonne(colonne,num):
+    if num>6 or num<=0:
+        print("les capteurs sont numérotés de 1 à 6")
+    else:
+        return ss_projet(num)[colonne]
+    
+    
 projet1=(projet[projet['id']==1])
 projet2=(projet[projet['id']==2])
 projet3=(projet[projet['id']==3])
@@ -33,6 +45,12 @@ humidity3=(projet3['humidity'])
 humidity4=(projet4['humidity'])
 humidity5=(projet5['humidity'])
 humidity6=(projet6['humidity'])
+noise1=(projet1['noise'])
+noise2=(projet2['noise'])
+noise3=(projet3['noise'])
+noise4=(projet4['noise'])
+noise5=(projet5['noise'])
+noise6=(projet6['noise'])
 
 """
 projet.info()  
@@ -255,7 +273,13 @@ def courbe_intervalle_tps(serie,date1,date2):
         serie[date1:date2].plot()
         plt.show()
   
-    
+def Diagrm_Comparaison(nom_serie,date):
+    listmoy=[]
+    for i in range(1,7):
+        listmoy.append(moyenne_arithmetique(ss_colonne(projet[nom_serie][date],i)))
+    Tableau=pd.DataFrame({"moyenne":listmoy},index=['capteur1','capteur2','capteur3','capteur4','capteur5','capteur6'])
+    return Tableau.plot.bar()
+
     
     
 
