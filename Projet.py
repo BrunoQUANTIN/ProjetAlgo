@@ -26,6 +26,11 @@ def ss_colonne(colonne,num):
     else:
         return ss_projet(num)[colonne]
     
+def ss_colonnedate(colonne,num,date):
+    if num>6 or num<=0:
+        print("les capteurs sont numérotés de 1 à 6")
+    else:
+        return ss_projet(num)[colonne][date]
     
 projet1=(projet[projet['id']==1])
 projet2=(projet[projet['id']==2])
@@ -276,9 +281,20 @@ def courbe_intervalle_tps(serie,date1,date2):
 def Diagrm_Comparaison(nom_serie,date):
     listmoy=[]
     for i in range(1,7):
-        listmoy.append(moyenne_arithmetique(ss_colonne(projet[nom_serie][date],i)))
-    Tableau=pd.DataFrame({"moyenne":listmoy},index=['capteur1','capteur2','capteur3','capteur4','capteur5','capteur6'])
-    return Tableau.plot.bar()
+        listmoy.append(moyenne_arithmetique(ss_colonnedate(nom_serie,i,date)))
+    Tableau=pd.DataFrame({"moyenne " +nom_serie:listmoy},index=['capteur1','capteur2','capteur3','capteur4','capteur5','capteur6'])
+    return Tableau.plot.bar() 
+
+def Diagrm_Comparaisons(nom_serie,date):
+    Dicovid={}
+    for i in range(1,7):
+        Dicovid.update({'capteur'+str(i):ss_colonnedate(nom_serie,i,date)})
+    Tableau=pd.DataFrame(Dicovid)
+    print(Tableau)
+    return Tableau.plot()
+   
+    
+  
 
     
     
