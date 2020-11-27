@@ -7,13 +7,13 @@ import matplotlib.pyplot as plt
 import numpy
 sys.setrecursionlimit(15000)  #changement limite récursivité
 
-
+"""
 #Bruno
 projet=pd.read_csv("C:/Users/QUANTIN/ProjetAlgo1/EIVP_KM.csv", sep=";",index_col='sent_at',parse_dates=True)
 """
 #Zacharie
 projet=pd.read_csv("EIVP_KM.csv", sep=";",index_col='sent_at',parse_dates=True)
-"""
+
 def ss_projet(num):
     if num>6 or num<=0:
         print("les capteurs sont numérotés de 1 à 6")
@@ -101,6 +101,14 @@ projet['colonne'].apply(lambda x: x+1)    #appliquer une fonction à une SERIE
 
 
 ##Programmes
+"somme"
+
+def somme(liste1,liste2):
+    L=[] #SONT DE LA MM TAILLE
+    for i in range(len(liste1)):
+        x=liste1[i]+liste2[i]
+        L.append(x)
+    return L
 
 "min/max"
 
@@ -198,6 +206,11 @@ def variance(serie):  #WORKS attention à la précision
     for x in serie:
         somme+=(x-m)**2
     return somme/n
+
+def covariance(serie1,serie2):
+    L1,L2=list(serie1),list(serie2)
+    SOM=somme(L1,L2)
+    return variance(SOM)-variance(serie1)-variance(serie2)
     
 def ecart_type(serie): #WORKS attention à la précision
     return sqrt(variance(serie))
@@ -283,15 +296,16 @@ def Diagrm_Comparaison(nom_serie,date):
     listmoy=[]
     for i in range(1,7):
         listmoy.append(moyenne_arithmetique(ss_colonnedate(nom_serie,i,date)))
+        ss_colonnedate(nom_serie,i,date).plot(label='capteur'+str(i))
+    plt.legend()
+    plt.show()
     Tableau=pd.DataFrame({"moyenne " +nom_serie:listmoy},index=['capteur1','capteur2','capteur3','capteur4','capteur5','capteur6'])
-    return Tableau.plot.bar() 
-
+    Tableau.plot.bar()
+   
     
 
-def Diagrm_Comparaisons(nom_serie,date):
-    for i in range(1,7):
-        ss_colonnedate(nom_serie,i,date).plot()
-    plt.show()
+def correlation(serie1,serie2):
+    return covariance(serie1,serie2)/(ecart_type(serie1)*ecart_type(serie2))
 
    
     
