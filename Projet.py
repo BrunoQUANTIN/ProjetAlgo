@@ -306,6 +306,9 @@ def Diagrm_Comparaison(nom_serie,date):
 
 def correlation(serie1,serie2):
     return covariance(serie1,serie2)/(ecart_type(serie1)*ecart_type(serie2))
+    
+def Diagrm_boîte(liste_colonne):
+    return projet.boxplot(liste_colonne) and plt.show()
 
    
     
