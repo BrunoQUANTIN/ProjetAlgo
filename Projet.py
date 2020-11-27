@@ -4,7 +4,7 @@ import math
 from math import*
 from pylab import *
 import matplotlib.pyplot as plt 
-import numpy
+import numpy as np
 sys.setrecursionlimit(15000)  #changement limite récursivité
 
 """
@@ -38,12 +38,12 @@ projet3=(projet[projet['id']==3])
 projet4=(projet[projet['id']==4])
 projet5=(projet[projet['id']==5])
 projet6=(projet[projet['id']==6])
-tempér1=(projet1['temp'])
-tempér2=(projet2['temp'])
-tempér3=(projet3['temp'])
-tempér4=(projet4['temp'])
-tempér5=(projet5['temp'])
-tempér6=(projet6['temp'])
+temp1=(projet1['temp'])
+temp2=(projet2['temp'])
+temp3=(projet3['temp'])
+temp4=(projet4['temp'])
+temp5=(projet5['temp'])
+temp6=(projet6['temp'])
 humidity1=(projet1['humidity'])
 humidity2=(projet2['humidity'])
 humidity3=(projet3['humidity'])
