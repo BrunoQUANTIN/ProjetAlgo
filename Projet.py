@@ -299,16 +299,18 @@ def Diagrm_Comparaison(nom_serie,date):
         ss_colonnedate(nom_serie,i,date).plot(label='capteur'+str(i))
     plt.legend()
     plt.show()
-    Tableau=pd.DataFrame({"moyenne " +nom_serie:listmoy},index=['capteur1','capteur2','capteur3','capteur4','capteur5','capteur6'])
+    Tableau=pd.DataFrame({"moyenne"+nom_serie:listmoy},index=['capteur1','capteur2','capteur3','capteur4','capteur5','capteur6'])
     Tableau.plot.bar()
    
-    
 
 def correlation(serie1,serie2):
     return covariance(serie1,serie2)/(ecart_type(serie1)*ecart_type(serie2))
     
 def Diagrm_boîte(liste_colonne):       #liste de chaine de caractères
     return projet.boxplot(liste_colonne) and plt.show()
+    
+def coef_var(serie):           #étude variabilité
+    return ecart_type(serie)/abs(moyenne_arithmetique(serie))
 
    
     
