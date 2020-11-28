@@ -150,10 +150,23 @@ def shape_check(colonne):
             liste_jour_a_suppr.append(m+11)
         else:
             continue
-    print(liste_jour_a_suppr)      # donne liste jour avec erreurs sur ce capteur
+    print(liste_jour_a_suppr)     # donne liste jour avec erreurs sur ce capteur
+    new_projet=projet.loc['2019-08-'+str(liste_jour_a_suppr[0]+1):'2019-08-'+str(liste_jour_a_suppr[1]-1)]
+    n=len(liste_jour_a_suppr)
+    for p in range(2,n):
+        if liste_jour_a_suppr[p-1]+1==liste_jour_a_suppr[p]:
+            continue
+        else:
+            new_projet.merge(projet.loc['2019-08-'+str(liste_jour_a_suppr[p-1]+1):'2019-08-'+str(liste_jour_a_suppr[p]-1)],how='right')   #on concatène tous les jours valables
+    if liste_jour_a_suppr[n-1]==25:
+        return(new_projet)
+    else:
+        return(new_projet.merge(projet.loc['2019-08-'+str(liste_jour_a_suppr[len(liste_jour_a_suppr)]+1):'2019-08-25'], how='right'))   #on ajoute les jours aprés le dernier erroné jusqu'au 25 aout dernier de notre liste
+        
+new_projet=shape_check('temp')    
         
     
-        
+
 "somme"
 
 def somme(liste1,liste2):
@@ -342,9 +355,14 @@ def courbe_intervalle_tps(serie,date1,date2):  #problème
     if type(date1)!=str or type(date2)!=str:
         print ("La date est une chaîne de caractère!")
     else:
-        serie[date1:date2].plot()
+        projet.loc[date1:date2,'temp'].plot()
         plt.show()
-  
+        
+def courbe_intervalle_tps_division(serie,num,date1,date2,lettre_divisiontemporelle):
+    ss_projet(num).loc[date1:date2, serie].resample(str(lettre_divisiontemporelle)).plot() 
+    plt.show()
+    
+     
 def Diagrm_Comparaison(nom_serie,date):  
     listmoy=[]
     for i in range(1,7):
@@ -370,8 +388,6 @@ def coef_var(serie):           #étude variabilité
    
 def correlation(serie1,serie2):
     return covariance(serie1,serie2)/(ecart_type(serie1)*ecart_type(serie2))  
-  
-
     
     
 
