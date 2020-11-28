@@ -1,10 +1,11 @@
+
 import pandas as pd
 import sys
 import math
 from math import*
 from pylab import *
 import matplotlib.pyplot as plt 
-import numpy
+import numpy as np
 sys.setrecursionlimit(15000)  #changement limite récursivité
 
 
@@ -31,19 +32,26 @@ def ss_colonnedate(colonne,num,date):
         print("les capteurs sont numérotés de 1 à 6")
     else:
         return ss_projet(num)[colonne][date]
-    
+"""
+def dtFrame(colonne):
+    Dicovid={}
+    for i in range (1,7):
+        Dicovid[colonne+str(i)]=list(ss_colonne(colonne,i))
+    DtFrame=pd.DataFrame(Dicovid)
+    return DtFrame 
+"""
 projet1=(projet[projet['id']==1])
 projet2=(projet[projet['id']==2])
 projet3=(projet[projet['id']==3])
 projet4=(projet[projet['id']==4])
 projet5=(projet[projet['id']==5])
 projet6=(projet[projet['id']==6])
-tempér1=(projet1['temp'])
-tempér2=(projet2['temp'])
-tempér3=(projet3['temp'])
-tempér4=(projet4['temp'])
-tempér5=(projet5['temp'])
-tempér6=(projet6['temp'])
+temp1=(projet1['temp'])
+temp2=(projet2['temp'])
+temp3=(projet3['temp'])
+temp4=(projet4['temp'])
+temp5=(projet5['temp'])
+temp6=(projet6['temp'])
 humidity1=(projet1['humidity'])
 humidity2=(projet2['humidity'])
 humidity3=(projet3['humidity'])
@@ -56,6 +64,8 @@ noise3=(projet3['noise'])
 noise4=(projet4['noise'])
 noise5=(projet5['noise'])
 noise6=(projet6['noise'])
+
+
 
 """
 projet.info()  
@@ -101,6 +111,12 @@ projet['colonne'].apply(lambda x: x+1)    #appliquer une fonction à une SERIE
 
 
 ##Programmes
+
+"Verification"
+def shape_check(colonne):
+    for i in range (1,7):
+        print (ss_colonne(colonne,i).shape)
+        #Asuivre...
 "somme"
 
 def somme(liste1,liste2):
@@ -285,14 +301,14 @@ def courbe_jour(serie,date):
         serie[date].plot()
         plt.show()
   
-def courbe_intervalle_tps(serie,date1,date2):
+def courbe_intervalle_tps(serie,date1,date2):  #problème
     if type(date1)!=str or type(date2)!=str:
         print ("La date est une chaîne de caractère!")
     else:
         serie[date1:date2].plot()
         plt.show()
   
-def Diagrm_Comparaison(nom_serie,date):
+def Diagrm_Comparaison(nom_serie,date):  
     listmoy=[]
     for i in range(1,7):
         listmoy.append(moyenne_arithmetique(ss_colonnedate(nom_serie,i,date)))
@@ -302,18 +318,21 @@ def Diagrm_Comparaison(nom_serie,date):
     Tableau=pd.DataFrame({"moyenne"+nom_serie:listmoy},index=['capteur1','capteur2','capteur3','capteur4','capteur5','capteur6'])
     Tableau.plot.bar()
    
-
-def correlation(serie1,serie2):
-    return covariance(serie1,serie2)/(ecart_type(serie1)*ecart_type(serie2))
     
-def Diagrm_boîte(liste_colonne):       #liste de chaine de caractères
-    return projet.boxplot(liste_colonne) and plt.show()
+def Diagrm_boîte(colonne): 
+    L=[]
+    for i in range (1,7):
+        L.append(ss_colonne(colonne,i))
+    plt.boxplot(L)
+    plt.show()
     
+   
 def coef_var(serie):           #étude variabilité
     return ecart_type(serie)/abs(moyenne_arithmetique(serie))
 
    
-    
+def correlation(serie1,serie2):
+    return covariance(serie1,serie2)/(ecart_type(serie1)*ecart_type(serie2))  
   
 
     
