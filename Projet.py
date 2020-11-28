@@ -32,6 +32,20 @@ def ss_colonnedate(colonne,num,date):
         print("les capteurs sont numérotés de 1 à 6")
     else:
         return ss_projet(num)[colonne][date]
+        
+        
+def is_in(liste,a):
+    r=0
+    for i in range(len(liste)):
+        if liste[i]==a:
+            r+=1
+            break
+        else:
+            continue
+    return r==1
+        
+    
+     
 """
 def dtFrame(colonne):
     Dicovid={}
@@ -114,9 +128,32 @@ projet['colonne'].apply(lambda x: x+1)    #appliquer une fonction à une SERIE
 
 "Verification"
 def shape_check(colonne):
+    L=[]
     for i in range (1,7):
-        print (ss_colonne(colonne,i).shape)
-        #Asuivre...
+        L.append((ss_colonne(colonne,i).shape)[0])
+    print(L)
+    rang_min=0
+    for j in range(len(L)):
+        if L[j]<L[rang_min]:
+            rang_min=j
+        else:
+            continue
+    print(rang_min+1)      #compenser le fait que la liste commence à 0 et les capteurs à 1
+    serie_a_etudier= ss_projet(rang_min+1)
+    liste_nombre_mesure_jour=[]
+    for k in range(11,26):
+        liste_nombre_mesure_jour.append(ss_colonnedate(colonne,rang_min+1,'2019-08-'+str(k)).shape[0])
+    print(liste_nombre_mesure_jour)     #donne la liste du nombre de mesure par jour pour le capteur avec le min de données
+    liste_jour_a_suppr=[]
+    for m in range (len(liste_nombre_mesure_jour)):
+        if liste_nombre_mesure_jour[m]<=95:
+            liste_jour_a_suppr.append(m+11)
+        else:
+            continue
+    print(liste_jour_a_suppr)      # donne liste jour avec erreurs sur ce capteur
+        
+    
+        
 "somme"
 
 def somme(liste1,liste2):
