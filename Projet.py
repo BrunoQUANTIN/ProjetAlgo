@@ -7,13 +7,13 @@ import matplotlib.pyplot as plt
 import numpy
 sys.setrecursionlimit(15000)  #changement limite récursivité
 
-"""
+
 #Bruno
 projet=pd.read_csv("C:/Users/QUANTIN/ProjetAlgo1/EIVP_KM.csv", sep=";",index_col='sent_at',parse_dates=True)
 """
 #Zacharie
 projet=pd.read_csv("EIVP_KM.csv", sep=";",index_col='sent_at',parse_dates=True)
-
+"""
 def ss_projet(num):
     if num>6 or num<=0:
         print("les capteurs sont numérotés de 1 à 6")
