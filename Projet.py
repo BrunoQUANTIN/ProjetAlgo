@@ -8,13 +8,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 sys.setrecursionlimit(15000)  #changement limite récursivité
 
-
+"""
 #Bruno
 projet=pd.read_csv("C:/Users/QUANTIN/ProjetAlgo1/EIVP_KM.csv", sep=";",index_col='sent_at',parse_dates=True)
 """
 #Zacharie
 projet=pd.read_csv("EIVP_KM.csv", sep=";",index_col='sent_at',parse_dates=True)
-"""
+
 def ss_projet(num):
     if num>6 or num<=0:
         print("les capteurs sont numérotés de 1 à 6")
@@ -130,23 +130,23 @@ projet['colonne'].apply(lambda x: x+1)    #appliquer une fonction à une SERIE
 def shape_check(colonne):
     L=[]
     for i in range (1,7):
-        L.append((ss_colonne(colonne,i).shape)[0])
-    print(L)
+        L.append((ss_colonne(colonne,i).shape)[0]) #liste du nombre de lignes de données enregistrées par chaque capteur 
+    print(L) #RETIRER
     rang_min=0
     for j in range(len(L)):
         if L[j]<L[rang_min]:
             rang_min=j
         else:
             continue
-    print(rang_min+1)      #compenser le fait que la liste commence à 0 et les capteurs à 1
+    print('le capteur '+str(rang_min+1)+' contient le moins de données.')      #compenser le fait que la liste commence à 0 et les capteurs à 1
     serie_a_etudier= ss_projet(rang_min+1)
-    liste_nombre_mesure_jour=[]
-    for k in range(11,26):
-        liste_nombre_mesure_jour.append(ss_colonnedate(colonne,rang_min+1,'2019-08-'+str(k)).shape[0])
-    print(liste_nombre_mesure_jour)     #donne la liste du nombre de mesure par jour pour le capteur avec le min de données
+    liste_nombre_mesures_jour=[]
+    for k in range(11,26):  #les jours de mesures sont entre le 11 et le 25 aout 2019
+        liste_nombre_mesures_jour.append(ss_colonnedate(colonne,rang_min+1,'2019-08-'+str(k)).shape[0])
+    print(liste_nombre_mesures_jour)     #donne la liste du nombre de mesures par jour pour le capteur avec le min de données
     liste_jour_a_suppr=[]
-    for m in range (len(liste_nombre_mesure_jour)):
-        if liste_nombre_mesure_jour[m]<=95:
+    for m in range (len(liste_nombre_mesures_jour)):
+        if liste_nombre_mesures_jour[m]<=95:
             liste_jour_a_suppr.append(m+11)
         else:
             continue
@@ -164,6 +164,22 @@ def shape_check(colonne):
         return(new_projet.merge(projet.loc['2019-08-'+str(liste_jour_a_suppr[len(liste_jour_a_suppr)]+1):'2019-08-25'], how='right'))   #on ajoute les jours aprés le dernier erroné jusqu'au 25 aout dernier de notre liste
         
 new_projet=shape_check('temp')    
+        
+def mesures_par_jour(colonne):
+    liste_nombre_mesures_jour=[]
+    for i in range(1,7):
+        for k in range(11,26):  #les jours de mesures sont entre le 11 et le 25 aout 2019
+            liste_nombre_mesures_jour.append(ss_colonnedate(colonne,i,'2019-08-'+str(k)).shape[0])
+        print(liste_nombre_mesures_jour)
+    Dicomesure={'nombre_de_mesures':liste_nombre_mesures_jour}
+    Datamesure=pd.DataFrame(Dicomesure)
+    nombremesure=Datamesure['nombre_de_mesures'].value_counts()
+    print(nombremesure)
+    list_proportion=[]
+    for x in nombremesure:
+        list_proportion.append(x/len(liste_nombre_mesures_jour))
+    m=calcul_max(list_proportion)
+    return m #pb: il faut revenir sur le chiffre le présent de proportion m
         
     
 
