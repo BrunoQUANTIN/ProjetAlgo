@@ -170,17 +170,24 @@ def mesures_par_jour(colonne):
     for i in range(1,7):
         for k in range(11,26):  #les jours de mesures sont entre le 11 et le 25 aout 2019
             liste_nombre_mesures_jour.append(ss_colonnedate(colonne,i,'2019-08-'+str(k)).shape[0])
-        print(liste_nombre_mesures_jour)
+    print(liste_nombre_mesures_jour)
     Dicomesure={'nombre_de_mesures':liste_nombre_mesures_jour}
     Datamesure=pd.DataFrame(Dicomesure)
     nombremesure=Datamesure['nombre_de_mesures'].value_counts()
     print(nombremesure)
-    list_proportion=[]
-    for x in nombremesure:
-        list_proportion.append(x/len(liste_nombre_mesures_jour))
-    m=calcul_max(list_proportion)
-    return m #pb: il faut revenir sur le chiffre le présent de proportion m
-        
+    M=list(nombremesure)[0]
+    s,i=0,0
+    while s!=M:
+        init=liste_nombre_mesures_jour[i]
+        if x==init:
+            s+=1
+            i+=1
+        else:
+            i+=1
+    print(x)
+                    
+            
+   
     
 
 "somme"
