@@ -395,6 +395,7 @@ def Diagrm_Comparaison(nom_serie,date):
     plt.show()
     Tableau=pd.DataFrame({"moyenne"+nom_serie:listmoy},index=['capteur1','capteur2','capteur3','capteur4','capteur5','capteur6'])
     Tableau.plot.bar()
+    plt.show()
    
     
 def Diagrm_boîte(colonne): 
