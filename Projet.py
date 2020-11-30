@@ -260,6 +260,21 @@ def moy_nrgtique(serie_csv):
         s=abs(s-serie[i]/(log(s)-log(serie[i])))
     return s
 
+def moy_nrgtique2(serie_csv):
+    serie=list(serie_csv)
+    n=len(serie)
+    s=[]
+    if n==1:
+        return serie
+    if n%2==0:
+        for i in range(0,n,2):
+            s.append(abs(serie[i]-serie[i+1]/(log(serie[i])-log(serie[i+1]))))
+    else:
+        for j in range (0,n-1,2):
+            s.append(abs(serie[j]-serie[j+1]/(log(serie[j])-log(serie[j+1]))))
+        s.append(serie[n-1])
+    return moy_nrgtique(s)
+
  
 
 "médiane"
