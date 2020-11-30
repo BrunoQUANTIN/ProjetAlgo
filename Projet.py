@@ -1,4 +1,4 @@
-        "Projet de programmation, sujet 2, Bruno Quantin et Zacharie Seignibrard"
+"Projet de programmation, sujet 2, Bruno Quantin et Zacharie Seignibrard"
 
 
 
@@ -18,13 +18,13 @@ from collections import Counter #pour trouver dans une liste l'élément le plus
 
 "Chargement des données CSV"
 
-"""
+
 #Bruno
 projet=pd.read_csv("C:/Users/QUANTIN/ProjetAlgo1/EIVP_KM.csv", sep=";",index_col='sent_at',parse_dates=True)
 """
 #Zacharie
 projet=pd.read_csv("EIVP_KM.csv", sep=";",index_col='sent_at',parse_dates=True)
-
+"""
 
 
 "Fonctions outils de récupération de données"
@@ -161,9 +161,9 @@ def shape_check(colonne):
     def nb_le_plus_rep(liste):
         l=Counter(liste).most_common(1)
         return l[0][0]
-    print('ICI LE NB LE PLUS REP EST '+ str(nb_le_plus_rep(liste_nombre_mesures_jour)-1))
+    print('ICI LE NB LE PLUS REP EST '+ str(nb_le_plus_rep(liste_nombre_mesures_jour)))
     for m in range (len(liste_nombre_mesures_jour)):
-        if liste_nombre_mesures_jour[m]<=(nb_le_plus_rep(liste_nombre_mesures_jour)-1):
+        if liste_nombre_mesures_jour[m]<(nb_le_plus_rep(liste_nombre_mesures_jour)):
             liste_jour_a_suppr.append(m+11) #PQ PLUS 11
         else:
             continue
@@ -200,7 +200,7 @@ def somme(liste1,liste2):
 def calcul_min(serie_csv):
     serie=list(serie_csv)    #WORKS 
     mini=serie[0]
-    n=len(serie) #pas nécessaire len(serie) devrait marcher
+    n=len(serie) 
     for i in range(n-1) :
         if serie[i]<mini:
             mini=serie[i]
@@ -263,7 +263,7 @@ def moy_nrgtique(serie_csv):
  
 
 "médiane"
-    "La fonction médiane ne peut s'appliquer qu'à une liste triée, on code alors une fonction de tri rapide"
+"La fonction médiane ne peut s'appliquer qu'à une liste triée, on code alors une fonction de tri rapide"
        
 def trirap(serie_csv):
     serie=list(serie_csv)        #WORK pour temp, humi --> pour lumi changement limit récursivité --> pour noise diviser séparer la liste en fonction des id sinon crash 
