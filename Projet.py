@@ -7,6 +7,7 @@ from pylab import *
 import matplotlib.pyplot as plt 
 import numpy as np
 sys.setrecursionlimit(15000)  #changement limite récursivité
+from collections import Counter #pour trouver dans une liste l'élément le plus récurrent
 
 """
 #Bruno
@@ -145,9 +146,13 @@ def shape_check(colonne):
         liste_nombre_mesures_jour.append(ss_colonnedate(colonne,rang_min+1,'2019-08-'+str(k)).shape[0])
     print(liste_nombre_mesures_jour)     #donne la liste du nombre de mesures par jour pour le capteur avec le min de données
     liste_jour_a_suppr=[]
+    def nb_le_plus_rep(liste):
+        l=Counter(liste).most_common(1)
+        return l[0][0]
+    print('ICI LE NB LE PLUS REP EST '+ str(nb_le_plus_rep(liste_nombre_mesures_jour)-1))
     for m in range (len(liste_nombre_mesures_jour)):
-        if liste_nombre_mesures_jour[m]<=95:
-            liste_jour_a_suppr.append(m+11)
+        if liste_nombre_mesures_jour[m]<=(nb_le_plus_rep(liste_nombre_mesures_jour)-1):
+            liste_jour_a_suppr.append(m+11) #PQ PLUS 11
         else:
             continue
     print(liste_jour_a_suppr)     # donne liste jour avec erreurs sur ce capteur
@@ -164,7 +169,8 @@ def shape_check(colonne):
         return(new_projet.merge(projet.loc['2019-08-'+str(liste_jour_a_suppr[len(liste_jour_a_suppr)]+1):'2019-08-25'], how='right'))   #on ajoute les jours aprés le dernier erroné jusqu'au 25 aout dernier de notre liste
         
 new_projet=shape_check('temp')    
-        
+"""  
+SI IL FAUT VRAIMENT UNE FONCTION POUR TROUVER 96 ON DOIT RETRAVAILLER CELLE CI      
 def mesures_par_jour(colonne):
     liste_nombre_mesures_jour=[]
     for i in range(1,7):
@@ -186,16 +192,11 @@ def mesures_par_jour(colonne):
                 else:
                     continue
     return x
+"""
+def nb_le_plus_commun(liste):
+    l=Counter(liste).most_common(1)
+    return l[0][0]
 
-"""    
-def nb_plus_frequent(liste):
-    occurs = {}
-    for nombre in liste.lower():
-        occurs[nombre] = liste.count(nombre)
-    return {nombre: occurrences for nombre, occurrences in occurs.items()
-                                if occurrences == max(occurs.values())}            
-"""   
-    
 
 "somme"
 
