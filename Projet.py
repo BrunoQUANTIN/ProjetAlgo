@@ -178,16 +178,23 @@ def mesures_par_jour(colonne):
     M=list(nombremesure)[0]
     s,i=0,0
     while s!=M:
-        init=liste_nombre_mesures_jour[i]
-        if x==init:
-            s+=1
-            i+=1
-        else:
-            i+=1
-    print(x)
-                    
-            
-   
+        for x in liste_nombre_mesures_jour:
+            for i in range(len(liste_nombre_mesures_jour)):
+                init=liste_nombre_mesures_jour[i]
+                if x==init:
+                    s+=1
+                else:
+                    continue
+    return x
+
+"""    
+def nb_plus_frequent(liste):
+    occurs = {}
+    for nombre in liste.lower():
+        occurs[nombre] = liste.count(nombre)
+    return {nombre: occurrences for nombre, occurrences in occurs.items()
+                                if occurrences == max(occurs.values())}            
+"""   
     
 
 "somme"
