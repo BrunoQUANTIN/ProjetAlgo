@@ -365,7 +365,7 @@ def courbe(serie1, serie2):
     serie2.plot()
     plt.show()
 
-##courbe en fonction jour
+##courbe
 
 def courbe_jour(serie,date):
     if type(date)!=str:
@@ -374,11 +374,11 @@ def courbe_jour(serie,date):
         serie[date].plot()
         plt.show()
   
-def courbe_intervalle_tps(serie,date1,date2):  #problème
+def courbe_intervalle_tps(serie,date1,date2):  
     if type(date1)!=str or type(date2)!=str:
         print ("La date est une chaîne de caractère!")
     else:
-        projet.loc[date1:date2,'temp'].plot()
+        projet.loc[date1:date2,serie].plot()
         plt.show()
         
 def courbe_intervalle_tps_division(serie,num,date1,date2,lettre_divisiontemporelle):
