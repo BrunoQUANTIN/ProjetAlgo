@@ -1,3 +1,8 @@
+        "Projet de programmation, sujet 2, Bruno Quantin et Zacharie Seignibrard"
+
+
+
+"Import des bibliothèques nécessaires"
 
 import pandas as pd
 import sys
@@ -9,6 +14,10 @@ import numpy as np
 sys.setrecursionlimit(15000)  #changement limite récursivité
 from collections import Counter #pour trouver dans une liste l'élément le plus récurrent
 
+
+
+"Chargement des données CSV"
+
 """
 #Bruno
 projet=pd.read_csv("C:/Users/QUANTIN/ProjetAlgo1/EIVP_KM.csv", sep=";",index_col='sent_at',parse_dates=True)
@@ -16,17 +25,23 @@ projet=pd.read_csv("C:/Users/QUANTIN/ProjetAlgo1/EIVP_KM.csv", sep=";",index_col
 #Zacharie
 projet=pd.read_csv("EIVP_KM.csv", sep=";",index_col='sent_at',parse_dates=True)
 
+
+
+"Fonctions outils de récupération de données"
+
 def ss_projet(num):
     if num>6 or num<=0:
         print("les capteurs sont numérotés de 1 à 6")
     else:
         return projet[projet['id']==num]
 
+
 def ss_colonne(colonne,num):
     if num>6 or num<=0:
         print("les capteurs sont numérotés de 1 à 6")
     else:
         return ss_projet(num)[colonne]
+ 
     
 def ss_colonnedate(colonne,num,date):
     if num>6 or num<=0:
@@ -44,17 +59,11 @@ def is_in(liste,a):
         else:
             continue
     return r==1
-        
-    
+   
      
-"""
-def dtFrame(colonne):
-    Dicovid={}
-    for i in range (1,7):
-        Dicovid[colonne+str(i)]=list(ss_colonne(colonne,i))
-    DtFrame=pd.DataFrame(Dicovid)
-    return DtFrame 
-"""
+    
+"Sous-projets de tests"
+
 projet1=(projet[projet['id']==1])
 projet2=(projet[projet['id']==2])
 projet3=(projet[projet['id']==3])
@@ -125,9 +134,12 @@ projet['colonne'].apply(lambda x: x+1)    #appliquer une fonction à une SERIE
 
 
 
-##Programmes
+"Dans la suite figurent les codes d'analyses de données"
+
+
 
 "Verification"
+
 def shape_check(colonne):
     L=[]
     for i in range (1,7):
@@ -169,33 +181,7 @@ def shape_check(colonne):
         return(new_projet.merge(projet.loc['2019-08-'+str(liste_jour_a_suppr[len(liste_jour_a_suppr)]+1):'2019-08-25'], how='right'))   #on ajoute les jours aprés le dernier erroné jusqu'au 25 aout dernier de notre liste
         
 new_projet=shape_check('temp')    
-"""  
-SI IL FAUT VRAIMENT UNE FONCTION POUR TROUVER 96 ON DOIT RETRAVAILLER CELLE CI      
-def mesures_par_jour(colonne):
-    liste_nombre_mesures_jour=[]
-    for i in range(1,7):
-        for k in range(11,26):  #les jours de mesures sont entre le 11 et le 25 aout 2019
-            liste_nombre_mesures_jour.append(ss_colonnedate(colonne,i,'2019-08-'+str(k)).shape[0])
-    print(liste_nombre_mesures_jour)
-    Dicomesure={'nombre_de_mesures':liste_nombre_mesures_jour}
-    Datamesure=pd.DataFrame(Dicomesure)
-    nombremesure=Datamesure['nombre_de_mesures'].value_counts()
-    print(nombremesure)
-    M=list(nombremesure)[0]
-    s,i=0,0
-    while s!=M:
-        for x in liste_nombre_mesures_jour:
-            for i in range(len(liste_nombre_mesures_jour)):
-                init=liste_nombre_mesures_jour[i]
-                if x==init:
-                    s+=1
-                else:
-                    continue
-    return x
-"""
-def nb_le_plus_commun(liste):
-    l=Counter(liste).most_common(1)
-    return l[0][0]
+
 
 
 "somme"
@@ -206,6 +192,8 @@ def somme(liste1,liste2):
         x=liste1[i]+liste2[i]
         L.append(x)
     return L
+
+
 
 "min/max"
 
@@ -219,6 +207,7 @@ def calcul_min(serie_csv):
         else:
             continue
     return mini
+
     
 def calcul_max(serie_csv):
     serie=list(serie_csv) #WORKS
@@ -230,8 +219,10 @@ def calcul_max(serie_csv):
         else:
             continue
     return maxi
-    
-"médianne/moyennes"
+ 
+
+   
+"moyennes"
 
 def moyenne_arithmetique(serie_csv):
     serie=list(serie_csv) #WORKS
@@ -240,6 +231,7 @@ def moyenne_arithmetique(serie_csv):
     for i in range(n):
         somme+=serie[i]
     return somme/n
+
     
 def moyenne_geom(serie_csv):
     serie=list(serie_csv)
@@ -249,8 +241,8 @@ def moyenne_geom(serie_csv):
         b=b*serie[i]
     moygéo=b**(1/n)
     return moygéo
-            
-    
+
+               
 def moyenne_harmo(serie_csv):
     serie=list(serie_csv)
     n=len(serie)
@@ -258,6 +250,7 @@ def moyenne_harmo(serie_csv):
     for i in range(n):
         somme+=1/serie[i]
     return n/somme
+
     
 def moy_nrgtique(serie_csv):
     serie=list(serie_csv)
@@ -266,8 +259,12 @@ def moy_nrgtique(serie_csv):
     for i in range(2,n):
         s=abs(s-serie[i]/(log(s)-log(serie[i])))
     return s
-    
-     
+
+ 
+
+"médiane"
+    "La fonction médiane ne peut s'appliquer qu'à une liste triée, on code alors une fonction de tri rapide"
+       
 def trirap(serie_csv):
     serie=list(serie_csv)        #WORK pour temp, humi --> pour lumi changement limit récursivité --> pour noise diviser séparer la liste en fonction des id sinon crash 
     if len(serie)<=1:
@@ -283,8 +280,8 @@ def trirap(serie_csv):
             else:
                 Ld.append(serie[i])
         return trirap(Lg) + [pivot] + trirap(Ld)
-   
-      
+    
+        
 def mediane(serie):  #WORK 
     lon=len(serie)
     l2= trirap(serie)
@@ -294,29 +291,6 @@ def mediane(serie):  #WORK
         return (l2[lon//2]+l2[(lon//2)+1])/2
         
 
-"variance/écart-type"
-
-def variance(serie):  #WORKS attention à la précision
-    n=len(serie)
-    somme=0
-    m=moyenne_arithmetique(serie)
-    for x in serie:
-        somme+=(x-m)**2
-    return somme/n
-
-def covariance(serie1,serie2):
-    L1,L2=list(serie1),list(serie2)
-    SOM=somme(L1,L2)
-    return variance(SOM)-variance(serie1)-variance(serie2)
-    
-def ecart_type(serie): #WORKS attention à la précision
-    return sqrt(variance(serie))
-
-
-"étendue"
-
-def étendue(serie):
-    return serie.max()-serie.min()
 
 "Quartiles"
 
@@ -334,6 +308,39 @@ def TroisièmeQuartile(serie): #WORKS
 def InterQuartile(serie): #WORKS
     return TroisièmeQuartile(serie)-PremierQuartile(serie)
 
+
+
+"variance et covariance"
+
+def variance(serie):  #WORKS attention à la précision
+    n=len(serie)
+    somme=0
+    m=moyenne_arithmetique(serie)
+    for x in serie:
+        somme+=(x-m)**2
+    return somme/n
+
+
+def covariance(serie1,serie2):
+    L1,L2=list(serie1),list(serie2)
+    SOM=somme(L1,L2)
+    return variance(SOM)-variance(serie1)-variance(serie2)
+ 
+    
+
+"écart type"
+
+def ecart_type(serie): #WORKS attention à la précision
+    return sqrt(variance(serie))
+
+
+
+"étendue"
+
+def étendue(serie):
+    return serie.max()-serie.min()
+
+
    
 "humidex"
 
@@ -349,6 +356,7 @@ b=237.7
 
 def alpha(Tair,humidite):
     return (a*Tair)/(b+Tair) + log(humidite)
+
      
 def Trosee(listTair_csv,listhumidite_csv):
     listTair,listhumidite=list(listTair_csv),list(listhumidite_csv)
@@ -357,23 +365,23 @@ def Trosee(listTair_csv,listhumidite_csv):
         list_Trosee.append((b*alpha(listTair[i],listhumidite[i]))/(a-alpha(listTair[i],listhumidite[i])))
     return list_Trosee
 
+
 def humidex(listTair_csv,listhumidite_csv):
     listTair,listhumidite=list(listTair_csv),list(listhumidite_csv)    #WORKS
     list_Humidex=[]
     for i in range(len(listTair)):
         list_Humidex.append(listTair[i] + 0.5555 * (6.11*exp(5417.7530*((1/273.16)-(1/(273.15 + Trosee(listTair,listhumidite)[i])))-10)))
     return list_Humidex
-     
-    
 
-##courbe
+
+     
+"courbes"
 
 def courbe(serie1, serie2):
     serie1.plot()
     serie2.plot()
     plt.show()
 
-##courbe
 
 def courbe_jour(serie,date):
     if type(date)!=str:
@@ -381,19 +389,21 @@ def courbe_jour(serie,date):
     else:
         serie[date].plot()
         plt.show()
-  
+
+    
 def courbe_intervalle_tps(serie,date1,date2):  
     if type(date1)!=str or type(date2)!=str:
         print ("La date est une chaîne de caractère!")
     else:
         projet.loc[date1:date2,serie].plot()
         plt.show()
+    
         
 def courbe_intervalle_tps_division(serie,num,date1,date2,lettre_divisiontemporelle):
     ss_projet(num).loc[date1:date2, serie].resample(str(lettre_divisiontemporelle)).plot() 
-    plt.show()
-    
+    plt.show()   
      
+    
 def Diagrm_Comparaison(nom_serie,date):  
     listmoy=[]
     for i in range(1,7):
@@ -404,7 +414,7 @@ def Diagrm_Comparaison(nom_serie,date):
     Tableau=pd.DataFrame({"moyenne"+nom_serie:listmoy},index=['capteur1','capteur2','capteur3','capteur4','capteur5','capteur6'])
     Tableau.plot.bar()
     plt.show()
-   
+    
     
 def Diagrm_boîte(colonne): 
     L=[]
@@ -413,6 +423,9 @@ def Diagrm_boîte(colonne):
     plt.boxplot(L)
     plt.show()
     
+    
+    
+"Etude des courbes"
    
 def coef_var(serie):           #étude variabilité
     return ecart_type(serie)/abs(moyenne_arithmetique(serie))
