@@ -473,7 +473,7 @@ def correlation(serie1,serie2):
     return covariance(serie1,serie2)/(ecart_type(serie1)*ecart_type(serie2)*2) 
     
     
-def liste_forte_correlation(num):
+def liste_forte_correlation(num):                   #corrélation entre colonne d'un même capteur
     tableau_corr=array(ss_projet(num).corr())
     l=[]
     dico={}
@@ -497,14 +497,20 @@ def forte_correlation():
     return dico
                            
             
-def forte_correlation_intercapteur(colonne):
+def forte_correlation_intercapteur(colonne):     #corrélation pour une même variable de chaque capteur 
     dico={}
     l=[]
     for i in range(1,7):
-        for j in range(i+1,7):
+        for j in range(1,7):
             if correlation(ss_colonne(colonne,i),ss_colonne(colonne,j))>=0.5 and correlation(ss_colonne(colonne,i),ss_colonne(colonne,j))!=1:
                 if is_in(l,correlation(ss_colonne(colonne,i),ss_colonne(colonne,j)))==False:
-                    dico['Les variables '+str(ss_projet(num).columns[i])+' et '+ str(ss_projet(num).columns[j]) + ' ont pour coefficient de corrélation'] = correlation(ss_colonne(colonne,i),ss_colonne(colonne,j))
+                    dico['Les variables '+str(projet.columns[i])+' et '+ str(projet.columns[j]) + ' ont pour coefficient de corrélation'] = correlation(ss_colonne(colonne,i),ss_colonne(colonne,j))
+                    l.append(correlation(ss_colonne(colonne,i),ss_colonne(colonne,j)))
+                else:
+                    continue
+            else:
+                continue
+    return dico
                 
             
     
