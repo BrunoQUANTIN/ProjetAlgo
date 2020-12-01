@@ -430,9 +430,38 @@ def Diagrm_boîte(colonne):
 def coef_var(serie):           #étude variabilité
     return ecart_type(serie)/abs(moyenne_arithmetique(serie))
 
-   
+
 def correlation(serie1,serie2):
-    return covariance(serie1,serie2)/(ecart_type(serie1)*ecart_type(serie2))  
+    return covariance(serie1,serie2)/(ecart_type(serie1)*ecart_type(serie2)*2) 
+    
+
+    
+def liste_forte_correlation(num):
+    tableau_corr=array(ss_projet(num).corr())
+    l=[]
+    dico={}
+    for i in range(tableau_corr.shape[0]):
+        for j in range(tableau_corr.shape[1]):
+            if tableau_corr[i][j]>=0.5 and tableau_corr[i][j]!=1:
+                if is_in(l,tableau_corr[i][j])== False:
+                    dico['Les variables '+str(ss_projet(num).columns[i])+' et '+ str(ss_projet(num).columns[j]) + ' ont pour coefficient de corrélation'] = tableau_corr[i][j]
+                    l.append(tableau_corr[i][j])
+                else:
+                    continue
+            else:
+                continue
+    return dico 
+    
+def forte_correlation():
+    dico={}
+    for i in range(1,6):
+        dico['capteur '+str(i)]=liste_forte_correlation(i)
+    return dico
+                  
+                  
+                  
+
+                
     
     
 
