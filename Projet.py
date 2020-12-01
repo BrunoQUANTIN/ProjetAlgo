@@ -188,8 +188,8 @@ new_projet=shape_check('temp')
 
 "somme"
 
-def somme(liste1,liste2):
-    l1,l2=ajustement(liste1,liste2)
+def somme(serie1,serie2):
+    l1,l2=ajustement(serie1,serie2)[0],ajustement(serie1,serie2)[1]
     L=[] #SONT DE LA MM TAILLE
     for i in range(len(l1)):
         x=l1[i]+l2[i]
@@ -321,12 +321,11 @@ def variance(serie):  #WORKS attention à la précision
     m=moyenne_arithmetique(serie)
     for x in serie:
         somme+=(x-m)**2
-    return somme/n
+    return somme/(n-1)
 
 
 def covariance(serie1,serie2):
-    L1,L2=list(serie1),list(serie2)
-    SOM=somme(L1,L2)
+    SOM=somme(serie1,serie2)
     return variance(SOM)-variance(serie1)-variance(serie2)
  
     
@@ -419,7 +418,7 @@ def Diagrm_Comparaison(nom_serie,date):
     plt.show()
     
     
-def Diagrm_boîte(colonne): 
+def Diagrm_boite(colonne): 
     L=[]
     for i in range (1,7):
         L.append(ss_colonne(colonne,i))
@@ -454,15 +453,20 @@ def liste_forte_correlation(num):
             else:
                 continue
     return dico 
+
+
     
 def forte_correlation():
     dico={}
     for i in range(1,6):
         dico['capteur '+str(i)]=liste_forte_correlation(i)
     return dico
+
+
+
                   
                   
-def ajustement(serie1,serie2) :
+def ajustementgrossier(serie1,serie2) :
     l1=list(serie1)
     l2=list(serie2)
     n1=len(l1)
@@ -480,8 +484,89 @@ def ajustement(serie1,serie2) :
         return new_list,l2
         
         
+def ajustementlisteunique(serie1,liste_jour_a_suppr) :
+    l1=list(serie1)
+    new_liste1=serie1['2019-08-'+str(liste_jour_a_suppr[0]+1):'2019-08-'+str(liste_jour_a_suppr[1]-1)]
+    n=len(liste_jour_a_suppr)
+    for p in range(2,n):
+        if liste_jour_a_suppr[p-1]+1==liste_jour_a_suppr[p]:
+            continue
+        else:
+            new_liste1.append(serie1['2019-08-'+str(liste_jour_a_suppr[p-1]+1):'2019-08-'+str(liste_jour_a_suppr[p]-1)])   #on concatène tous les jours valables
+    if liste_jour_a_suppr[n-1]==25:
+        return list(new_liste1)
+    else:
+        return list(new_liste1.append(serie1['2019-08-'+str(liste_jour_a_suppr[len(liste_jour_a_suppr)]+1):'2019-08-25']))
+        
+        
     
-
+def ajustement(serie1,serie2) :
+    l1=list(serie1)
+    l2=list(serie2)
+    n1=len(l1)
+    n2=len(l2)
+    rang_min=min(n1,n2)
+    liste_nombre_mesures_jour=[]
+    if n1==n2:
+        return [l1,l2]
+    elif rang_min==n1:
+        for k in range(11,26):  #les jours de mesures sont entre le 11 et le 25 aout 2019
+            liste_nombre_mesures_jour.append(serie1['2019-08-'+str(k)].shape[0])
+        liste_jour_a_suppr=[]
+        def nb_le_plus_rep(liste):
+            l=Counter(liste).most_common(1)
+            return l[0][0]
+        for m in range (len(liste_nombre_mesures_jour)):
+            if liste_nombre_mesures_jour[m]<(nb_le_plus_rep(liste_nombre_mesures_jour)):
+                liste_jour_a_suppr.append(m+11) #PQ PLUS 11
+            else:
+                continue
+        new_liste=serie2['2019-08-'+str(liste_jour_a_suppr[0]+1):'2019-08-'+str(liste_jour_a_suppr[1]-1)]
+        n=len(liste_jour_a_suppr)
+        for p in range(2,n):
+            if liste_jour_a_suppr[p-1]+1==liste_jour_a_suppr[p]:
+                continue
+            else:
+                new_liste.append(serie2['2019-08-'+str(liste_jour_a_suppr[p-1]+1):'2019-08-'+str(liste_jour_a_suppr[p]-1)])   #on concatène tous les jours valables
+        if liste_jour_a_suppr[n-1]==25:
+            return [ajustementlisteunique(serie1,liste_jour_a_suppr),list(new_liste)]
+        else:
+            return [ajustementlisteunique(serie1,liste_jour_a_suppr),list(new_liste.append(serie2['2019-08-'+str(liste_jour_a_suppr[len(liste_jour_a_suppr)]+1):'2019-08-25']))]
+    else:
+        for k in range(11,26):  #les jours de mesures sont entre le 11 et le 25 aout 2019
+            liste_nombre_mesures_jour.append(serie2['2019-08-'+str(k)].shape[0])
+        liste_jour_a_suppr=[]
+        def nb_le_plus_rep(liste):
+            l=Counter(liste).most_common(1)
+            return l[0][0]
+        for m in range (len(liste_nombre_mesures_jour)):
+            if liste_nombre_mesures_jour[m]<(nb_le_plus_rep(liste_nombre_mesures_jour)):
+                liste_jour_a_suppr.append(m+11) #PQ PLUS 11
+            else:
+                continue
+        new_liste=serie1['2019-08-'+str(liste_jour_a_suppr[0]+1):'2019-08-'+str(liste_jour_a_suppr[1]-1)]
+        n=len(liste_jour_a_suppr)
+        for p in range(2,n):
+            if liste_jour_a_suppr[p-1]+1==liste_jour_a_suppr[p]:
+                continue
+            else:
+                new_liste.append(serie1['2019-08-'+str(liste_jour_a_suppr[p-1]+1):'2019-08-'+str(liste_jour_a_suppr[p]-1)])   #on concatène tous les jours valables
+        if liste_jour_a_suppr[n-1]==25:
+            return [list(new_liste),ajustementlisteunique(serie2,liste_jour_a_suppr)]
+        else:
+            return [list(new_liste.append(serie1['2019-08-'+str(liste_jour_a_suppr[len(liste_jour_a_suppr)]+1):'2019-08-25'],ajustementlisteunique(serie2,liste_jour_a_suppr)))]
+            
+            
+            
+def forte_correlation_intercapteur(colonne):
+    dico={}
+    l=[]
+    for i in range(1,7):
+        for j in range(i+1,7):
+            if correlation(ss_colonne(colonne,i)
+            
+    
+    
                 
     
     
