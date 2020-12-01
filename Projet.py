@@ -91,46 +91,6 @@ noise6=(projet6['noise'])
 
 
 
-"""
-projet.info()  
-projet.head()  #5 premières lignes
-projet.tail()  #dernières lignes
-projet.shape   #attention sans parenthèse et renvoie le couple (nbr_ligne, nbr_colonne)
-temp_projet=projet.append(projet)   #copie du double
-temp_projet=temp_projet.drop_duplicates()   #copie en ayant retiré le double
-temp_projet.drop_duplicates(inplace=True)   #modifie automatiquement
-temp_projet.drop_duplicates( inplace = True , keep = False )    #False supprime les doublons, first idem sauf la 1ere occurence, last idem sauf la derniere
-projet.columns   #donne index des colonnes
-projet.rename(columns= {},inplace=True )  #pr renommer les colonnes
-projet.columns = [col.lower() for col in projet]  #colonne en minuscule
-projet. isnull (). sum()     #nombre de lignes nulles par colonne
-projet. dropna ()  #supprime les lignes avec au moins une valeur nulle
-projet. dropna ( axe = 1 )  #supprimes les colonnes avec des nulles
-tempera = projet[ 'temp' ]    #assimile une colonne dans une variable --> c'est une série
-tempera.head()
-tempera_moy=tempera.mean()    #moyenne --> .mean(axis=1)
-tempera. fillna ( tempera_moy , inplace = True )   #remplace les valeurs nulles par la moy
-projet.describe()   #donne toutes les infos sur chaque colonnes, moy, std(écart-type), min, max, var, sum, prod et pour les lignes --> 
-projet['temp'].describe()   #aussi pour les variables de catégories (type de films,...)
-projet['temp'].value_counts().head(10)     #fréquence des 10 1éres catégories
-projet.corr()          #corrélation des colonnes
-type(tempera)        #type de données ici série
-sous-ensemble=projet[['temp']]    #ici DataFrame car on a ajouté les crochets puis on peut faire une liste de colonnes
-ligne1=projet.loc["2"]     #ensemble des lignes avec l'index= 2 donc ici l'id et on peut sliccer avec extrémité comprise
-ligne2=projet.iloc[52]     #52ième ligne et on peut fair du sliccing avec extrémité exclue
-condition=(projet['temp']==22.4)    #condition sur une colonne et renvoie true ou false pour chaque ligne
-projet[projet['temp']==22.4]        #filtre les valeurs pour lesquelles c'est true
-#on peut faire des condition avec des str aussi et mettre plusieurs condition avec | et & 
-projet[ projet[ 'temp' ]. isin ([ 22.8, 25.3 ])] #ou utiliser .isin avec une liste des valeurs qui marchent
-projet[ ((projet[ 'temp' ] > = 23 ) & (projet[ 'temp' ] <= 25 )) & ( projet[ 'lum' ] > 20.0 ) & ( projet[ 'co2' ] <projet[ 'co2' ].quantile ( 0.25 )) ]    #erreur mais où ?!
-projet.apply(fonction)   # applique une fction à l'ensemble des données
-projet.plot(kind='scatter', x='temp', y='lum', title='Température vs Lum');  # tracé mais marche pas...
-projet[ 'temp' ]. plot ( kind = 'hist' , title = 'Température' );  #idem
-projet['temp'].plot (kind='box');      #box
-projet['colonne'].apply(lambda x: x+1)    #appliquer une fonction à une SERIE
-
-"""
-
 
 
 
@@ -138,37 +98,32 @@ projet['colonne'].apply(lambda x: x+1)    #appliquer une fonction à une SERIE
 
 
 
-"Verification"
+"Redimensionnement"
 
 def shape_check(colonne):
     L=[]
-    for i in range (1,7):
+    for i in range (1,7): #intervalle permettant de récupérer le 6 capteurs
         L.append((ss_colonne(colonne,i).shape)[0]) #liste du nombre de lignes de données enregistrées par chaque capteur 
-    print(L) #RETIRER
     rang_min=0
     for j in range(len(L)):
         if L[j]<L[rang_min]:
             rang_min=j
         else:
             continue
-    print('le capteur '+str(rang_min+1)+' contient le moins de données.')      #compenser le fait que la liste commence à 0 et les capteurs à 1
     serie_a_etudier= ss_projet(rang_min+1)
     liste_nombre_mesures_jour=[]
     for k in range(11,26):  #les jours de mesures sont entre le 11 et le 25 aout 2019
         liste_nombre_mesures_jour.append(ss_colonnedate(colonne,rang_min+1,'2019-08-'+str(k)).shape[0])
-    print(liste_nombre_mesures_jour)     #donne la liste du nombre de mesures par jour pour le capteur avec le min de données
     liste_jour_a_suppr=[]
     def nb_le_plus_rep(liste):
         l=Counter(liste).most_common(1)
         return l[0][0]
-    print('ICI LE NB LE PLUS REP EST '+ str(nb_le_plus_rep(liste_nombre_mesures_jour)))
     for m in range (len(liste_nombre_mesures_jour)):
-        if liste_nombre_mesures_jour[m]<(nb_le_plus_rep(liste_nombre_mesures_jour)):
-            liste_jour_a_suppr.append(m+11) #PQ PLUS 11
+        if liste_nombre_mesures_jour[m]<(nb_le_plus_rep(liste_nombre_mesures_jour)):  #comparaison au nombre de mesure par jour le plus courant
+            liste_jour_a_suppr.append(m+11) #+11 pour faire correspondre la position dans la série à la date correspondante
         else:
             continue
-    print(liste_jour_a_suppr)     # donne liste jour avec erreurs sur ce capteur
-    new_projet=projet.loc['2019-08-'+str(liste_jour_a_suppr[0]+1):'2019-08-'+str(liste_jour_a_suppr[1]-1)]
+    new_projet=projet.loc['2019-08-'+str(liste_jour_a_suppr[0]+1):'2019-08-'+str(liste_jour_a_suppr[1]-1)] #récupère les jours compris entre deux jours à supprimer exclus
     n=len(liste_jour_a_suppr)
     for p in range(2,n):
         if liste_jour_a_suppr[p-1]+1==liste_jour_a_suppr[p]:
@@ -182,10 +137,98 @@ def shape_check(colonne):
         
 new_projet=shape_check('temp') 
 
-  
+
+def ajustement(serie1,serie2) :
+    l1=list(serie1)
+    l2=list(serie2)
+    n1=len(l1)
+    n2=len(l2)
+    rang_min=min(n1,n2)
+    liste_nombre_mesures_jour=[]
+    if n1==n2:
+        return [l1,l2]
+    elif rang_min==n1:
+        for k in range(11,26):  #les jours de mesures sont entre le 11 et le 25 aout 2019
+            liste_nombre_mesures_jour.append(serie1['2019-08-'+str(k)].shape[0])
+        liste_jour_a_suppr=[]
+        def nb_le_plus_rep(liste):
+            l=Counter(liste).most_common(1)
+            return l[0][0]
+        for m in range (len(liste_nombre_mesures_jour)):
+            if liste_nombre_mesures_jour[m]<(nb_le_plus_rep(liste_nombre_mesures_jour)):
+                liste_jour_a_suppr.append(m+11) 
+            else:
+                continue
+        new_liste=serie2['2019-08-'+str(liste_jour_a_suppr[0]+1):'2019-08-'+str(liste_jour_a_suppr[1]-1)]
+        n=len(liste_jour_a_suppr)
+        for p in range(2,n):
+            if liste_jour_a_suppr[p-1]+1==liste_jour_a_suppr[p]:
+                continue
+            else:
+                new_liste.append(serie2['2019-08-'+str(liste_jour_a_suppr[p-1]+1):'2019-08-'+str(liste_jour_a_suppr[p]-1)])   #on concatène tous les jours valables
+        if liste_jour_a_suppr[n-1]==25:
+            return [ajustementlisteunique(serie1,liste_jour_a_suppr),list(new_liste)]
+        else:
+            return [ajustementlisteunique(serie1,liste_jour_a_suppr),list(new_liste.append(serie2['2019-08-'+str(liste_jour_a_suppr[len(liste_jour_a_suppr)]+1):'2019-08-25']))]
+    else:
+        for k in range(11,26):  #les jours de mesures sont entre le 11 et le 25 aout 2019
+            liste_nombre_mesures_jour.append(serie2['2019-08-'+str(k)].shape[0])
+        liste_jour_a_suppr=[]
+        def nb_le_plus_rep(liste):
+            l=Counter(liste).most_common(1)
+            return l[0][0]
+        for m in range (len(liste_nombre_mesures_jour)):
+            if liste_nombre_mesures_jour[m]<(nb_le_plus_rep(liste_nombre_mesures_jour)):
+                liste_jour_a_suppr.append(m+11) 
+            else:
+                continue
+        new_liste=serie1['2019-08-'+str(liste_jour_a_suppr[0]+1):'2019-08-'+str(liste_jour_a_suppr[1]-1)]
+        n=len(liste_jour_a_suppr)
+        for p in range(2,n):
+            if liste_jour_a_suppr[p-1]+1==liste_jour_a_suppr[p]:
+                continue
+            else:
+                new_liste.append(serie1['2019-08-'+str(liste_jour_a_suppr[p-1]+1):'2019-08-'+str(liste_jour_a_suppr[p]-1)])   #on concatène tous les jours valables
+        if liste_jour_a_suppr[n-1]==25:
+            return [list(new_liste),ajustementlisteunique(serie2,liste_jour_a_suppr)]
+        else:
+            return [list(new_liste.append(serie1['2019-08-'+str(liste_jour_a_suppr[len(liste_jour_a_suppr)]+1):'2019-08-25'],ajustementlisteunique(serie2,liste_jour_a_suppr)))]  
 
 
+def ajustementlisteunique(serie1,liste_jour_a_suppr) :
+    l1=list(serie1)
+    new_liste1=serie1['2019-08-'+str(liste_jour_a_suppr[0]+1):'2019-08-'+str(liste_jour_a_suppr[1]-1)]
+    n=len(liste_jour_a_suppr)
+    for p in range(2,n):
+        if liste_jour_a_suppr[p-1]+1==liste_jour_a_suppr[p]:
+            continue
+        else:
+            new_liste1.append(serie1['2019-08-'+str(liste_jour_a_suppr[p-1]+1):'2019-08-'+str(liste_jour_a_suppr[p]-1)])   #on concatène tous les jours valables
+    if liste_jour_a_suppr[n-1]==25:
+        return list(new_liste1)
+    else:
+        return list(new_liste1.append(serie1['2019-08-'+str(liste_jour_a_suppr[len(liste_jour_a_suppr)]+1):'2019-08-25']))
+    
+    
+def ajustementgrossier(serie1,serie2) : #Risque de déformer les statistiques
+    l1=list(serie1)
+    l2=list(serie2)
+    n1=len(l1)
+    n2=len(l2)
+    new_liste=[]
+    if n2==n1:
+        return liste1,liste2
+    elif n2>n1:
+        for i in range(n1):
+            new_list[i]=l2[i]
+        return l1,new_list
+    else:
+        for i in range(n2):
+            new_list[i]=l1[i]
+        return new_list,l2
 
+
+    
 "somme"
 
 def somme(serie1,serie2):
@@ -201,7 +244,7 @@ def somme(serie1,serie2):
 "min/max"
 
 def calcul_min(serie_csv):
-    serie=list(serie_csv)    #WORKS 
+    serie=list(serie_csv)     
     mini=serie[0]
     n=len(serie) 
     for i in range(n-1) :
@@ -213,7 +256,7 @@ def calcul_min(serie_csv):
 
     
 def calcul_max(serie_csv):
-    serie=list(serie_csv) #WORKS
+    serie=list(serie_csv) 
     maxi=serie[0]
     n=len(serie)
     for i in range(n-1) :
@@ -228,7 +271,7 @@ def calcul_max(serie_csv):
 "moyennes"
 
 def moyenne_arithmetique(serie_csv):
-    serie=list(serie_csv) #WORKS
+    serie=list(serie_csv) 
     n=len(serie)
     somme=0
     for i in range(n):
@@ -269,7 +312,7 @@ def moy_nrgtique(serie_csv):
 "La fonction médiane ne peut s'appliquer qu'à une liste triée, on code alors une fonction de tri rapide"
        
 def trirap(serie_csv):
-    serie=list(serie_csv)        #WORK pour temp, humi --> pour lumi changement limit récursivité --> pour noise diviser séparer la liste en fonction des id sinon crash 
+    serie=list(serie_csv)        #pour temp, humi --> pour lumi changement limit récursivité --> pour noise diviser séparer la liste en fonction des id sinon crash 
     if len(serie)<=1:
         return serie
     else:
@@ -285,7 +328,7 @@ def trirap(serie_csv):
         return trirap(Lg) + [pivot] + trirap(Ld)
     
         
-def mediane(serie):  #WORK 
+def mediane(serie):   
     lon=len(serie)
     l2= trirap(serie)
     if lon%2!=0:
@@ -297,25 +340,24 @@ def mediane(serie):  #WORK
 
 "Quartiles"
 
-def PremierQuartile(serie):  #WORKS
+def PremierQuartile(serie):  
     listeordonnée=trirap(serie)
-    q=int(len(serie)/4)
-    #qsup=q+1 d'un point de vue du code, pas utile d'arrondir à l'entier supèrieur 
+    q=int(len(serie)/4) 
     return listeordonnée[q-1]
 
-def TroisièmeQuartile(serie): #WORKS
+def TroisièmeQuartile(serie): 
     listeordonnée=trirap(serie)
     q=int(len(serie)*3/4)
     return listeordonnée[q-1]
 
-def InterQuartile(serie): #WORKS
+def InterQuartile(serie): 
     return TroisièmeQuartile(serie)-PremierQuartile(serie)
 
 
 
 "variance et covariance"
 
-def variance(serie):  #WORKS attention à la précision
+def variance(serie):  #attention à la précision
     n=len(serie)
     somme=0
     m=moyenne_arithmetique(serie)
@@ -332,7 +374,7 @@ def covariance(serie1,serie2):
 
 "écart type"
 
-def ecart_type(serie): #WORKS attention à la précision
+def ecart_type(serie): #attention à la précision
     return sqrt(variance(serie))
 
 
@@ -345,12 +387,6 @@ def étendue(serie):
 
    
 "humidex"
-
-#Domaine de validité: Formule de Heinrich Gustav Magnus-Tetens
-# 
-# 0<T<60 °C
-# 0,01 (1 %)< phi < 1 (100 %)
-# 0< T_{r} < 50 °C
 
 "Varibles globales en celsisus"
 a=17.27
@@ -369,7 +405,7 @@ def Trosee(listTair_csv,listhumidite_csv):
 
 
 def humidex(listTair_csv,listhumidite_csv):
-    listTair,listhumidite=list(listTair_csv),list(listhumidite_csv)    #WORKS
+    listTair,listhumidite=list(listTair_csv),list(listhumidite_csv)    
     list_Humidex=[]
     for i in range(len(listTair)):
         list_Humidex.append(listTair[i] + 0.5555 * (6.11*exp(5417.7530*((1/273.16)-(1/(273.15 + Trosee(listTair,listhumidite)[i])))-10)))
@@ -436,7 +472,6 @@ def coef_var(serie):           #étude variabilité
 def correlation(serie1,serie2):
     return covariance(serie1,serie2)/(ecart_type(serie1)*ecart_type(serie2)*2) 
     
-
     
 def liste_forte_correlation(num):
     tableau_corr=array(ss_projet(num).corr())
@@ -454,109 +489,13 @@ def liste_forte_correlation(num):
                 continue
     return dico 
 
-
     
 def forte_correlation():
     dico={}
     for i in range(1,6):
         dico['capteur '+str(i)]=liste_forte_correlation(i)
     return dico
-
-
-
-                  
-                  
-def ajustementgrossier(serie1,serie2) :
-    l1=list(serie1)
-    l2=list(serie2)
-    n1=len(l1)
-    n2=len(l2)
-    new_liste=[]
-    if n2==n1:
-        return liste1,liste2
-    elif n2>n1:
-        for i in range(n1):
-            new_list[i]=l2[i]
-        return l1,new_list
-    else:
-        for i in range(n2):
-            new_list[i]=l1[i]
-        return new_list,l2
-        
-        
-def ajustementlisteunique(serie1,liste_jour_a_suppr) :
-    l1=list(serie1)
-    new_liste1=serie1['2019-08-'+str(liste_jour_a_suppr[0]+1):'2019-08-'+str(liste_jour_a_suppr[1]-1)]
-    n=len(liste_jour_a_suppr)
-    for p in range(2,n):
-        if liste_jour_a_suppr[p-1]+1==liste_jour_a_suppr[p]:
-            continue
-        else:
-            new_liste1.append(serie1['2019-08-'+str(liste_jour_a_suppr[p-1]+1):'2019-08-'+str(liste_jour_a_suppr[p]-1)])   #on concatène tous les jours valables
-    if liste_jour_a_suppr[n-1]==25:
-        return list(new_liste1)
-    else:
-        return list(new_liste1.append(serie1['2019-08-'+str(liste_jour_a_suppr[len(liste_jour_a_suppr)]+1):'2019-08-25']))
-        
-        
-    
-def ajustement(serie1,serie2) :
-    l1=list(serie1)
-    l2=list(serie2)
-    n1=len(l1)
-    n2=len(l2)
-    rang_min=min(n1,n2)
-    liste_nombre_mesures_jour=[]
-    if n1==n2:
-        return [l1,l2]
-    elif rang_min==n1:
-        for k in range(11,26):  #les jours de mesures sont entre le 11 et le 25 aout 2019
-            liste_nombre_mesures_jour.append(serie1['2019-08-'+str(k)].shape[0])
-        liste_jour_a_suppr=[]
-        def nb_le_plus_rep(liste):
-            l=Counter(liste).most_common(1)
-            return l[0][0]
-        for m in range (len(liste_nombre_mesures_jour)):
-            if liste_nombre_mesures_jour[m]<(nb_le_plus_rep(liste_nombre_mesures_jour)):
-                liste_jour_a_suppr.append(m+11) #PQ PLUS 11
-            else:
-                continue
-        new_liste=serie2['2019-08-'+str(liste_jour_a_suppr[0]+1):'2019-08-'+str(liste_jour_a_suppr[1]-1)]
-        n=len(liste_jour_a_suppr)
-        for p in range(2,n):
-            if liste_jour_a_suppr[p-1]+1==liste_jour_a_suppr[p]:
-                continue
-            else:
-                new_liste.append(serie2['2019-08-'+str(liste_jour_a_suppr[p-1]+1):'2019-08-'+str(liste_jour_a_suppr[p]-1)])   #on concatène tous les jours valables
-        if liste_jour_a_suppr[n-1]==25:
-            return [ajustementlisteunique(serie1,liste_jour_a_suppr),list(new_liste)]
-        else:
-            return [ajustementlisteunique(serie1,liste_jour_a_suppr),list(new_liste.append(serie2['2019-08-'+str(liste_jour_a_suppr[len(liste_jour_a_suppr)]+1):'2019-08-25']))]
-    else:
-        for k in range(11,26):  #les jours de mesures sont entre le 11 et le 25 aout 2019
-            liste_nombre_mesures_jour.append(serie2['2019-08-'+str(k)].shape[0])
-        liste_jour_a_suppr=[]
-        def nb_le_plus_rep(liste):
-            l=Counter(liste).most_common(1)
-            return l[0][0]
-        for m in range (len(liste_nombre_mesures_jour)):
-            if liste_nombre_mesures_jour[m]<(nb_le_plus_rep(liste_nombre_mesures_jour)):
-                liste_jour_a_suppr.append(m+11) #PQ PLUS 11
-            else:
-                continue
-        new_liste=serie1['2019-08-'+str(liste_jour_a_suppr[0]+1):'2019-08-'+str(liste_jour_a_suppr[1]-1)]
-        n=len(liste_jour_a_suppr)
-        for p in range(2,n):
-            if liste_jour_a_suppr[p-1]+1==liste_jour_a_suppr[p]:
-                continue
-            else:
-                new_liste.append(serie1['2019-08-'+str(liste_jour_a_suppr[p-1]+1):'2019-08-'+str(liste_jour_a_suppr[p]-1)])   #on concatène tous les jours valables
-        if liste_jour_a_suppr[n-1]==25:
-            return [list(new_liste),ajustementlisteunique(serie2,liste_jour_a_suppr)]
-        else:
-            return [list(new_liste.append(serie1['2019-08-'+str(liste_jour_a_suppr[len(liste_jour_a_suppr)]+1):'2019-08-25'],ajustementlisteunique(serie2,liste_jour_a_suppr)))]
-            
-            
+                           
             
 def forte_correlation_intercapteur(colonne):
     dico={}
