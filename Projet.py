@@ -180,16 +180,19 @@ def shape_check(colonne):
     else:
         return(new_projet.merge(projet.loc['2019-08-'+str(liste_jour_a_suppr[len(liste_jour_a_suppr)]+1):'2019-08-25'], how='right'))   #on ajoute les jours aprés le dernier erroné jusqu'au 25 aout dernier de notre liste
         
-new_projet=shape_check('temp')    
+new_projet=shape_check('temp') 
+
+  
 
 
 
 "somme"
 
 def somme(liste1,liste2):
+    l1,l2=ajustement(liste1,liste2)
     L=[] #SONT DE LA MM TAILLE
-    for i in range(len(liste1)):
-        x=liste1[i]+liste2[i]
+    for i in range(len(l1)):
+        x=l1[i]+l2[i]
         L.append(x)
     return L
 
@@ -459,7 +462,25 @@ def forte_correlation():
     return dico
                   
                   
-                  
+def ajustement(serie1,serie2) :
+    l1=list(serie1)
+    l2=list(serie2)
+    n1=len(l1)
+    n2=len(l2)
+    new_liste=[]
+    if n2==n1:
+        return liste1,liste2
+    elif n2>n1:
+        for i in range(n1):
+            new_list[i]=l2[i]
+        return l1,new_list
+    else:
+        for i in range(n2):
+            new_list[i]=l1[i]
+        return new_list,l2
+        
+        
+    
 
                 
     
