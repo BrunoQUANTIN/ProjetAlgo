@@ -563,7 +563,10 @@ def forte_correlation_intercapteur(colonne):
     l=[]
     for i in range(1,7):
         for j in range(i+1,7):
-            if correlation(ss_colonne(colonne,i)
+            if correlation(ss_colonne(colonne,i),ss_colonne(colonne,j))>=0.5 and correlation(ss_colonne(colonne,i),ss_colonne(colonne,j))!=1:
+                if is_in(l,correlation(ss_colonne(colonne,i),ss_colonne(colonne,j)))==False:
+                    dico['Les variables '+str(ss_projet(num).columns[i])+' et '+ str(ss_projet(num).columns[j]) + ' ont pour coefficient de corrélation'] = correlation(ss_colonne(colonne,i),ss_colonne(colonne,j))
+                
             
     
     
